@@ -1,8 +1,6 @@
 package com.mycompany.conta.bancaria.controller;
 
-import com.mycompany.conta.bancaria.model.Cliente;
 import com.mycompany.conta.bancaria.service.ClienteDAO;
-import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -10,10 +8,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.mindrot.jbcrypt.BCrypt;
 
 /**
  *

@@ -7,15 +7,11 @@ package com.mycompany.conta.bancaria.service;
 
 import com.mycompany.conta.bancaria.model.Cliente;
 import com.mycompany.conta.bancaria.repository.ClienteRepository;
-import com.mycompany.conta.bancaria.util.ConnectionFactory;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Random;
 import org.mindrot.jbcrypt.BCrypt;
