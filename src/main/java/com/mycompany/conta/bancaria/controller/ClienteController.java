@@ -36,6 +36,25 @@ public class ClienteController extends HttpServlet {
         
         if (acao.equals("cadastro")) {            
             clienteDAO.cadastrarCliente(request, response);
+        } else if (acao.equals("consultarSaldo")) {
+            try {
+
+                String cpf = (String) request.getSession().getAttribute("cpf");
+                if (cpf == null) {
+                    request.setAttribute("erro", "Usuário não autenticado.");
+                    request.getRequestDispatcher("saldo.jsp").forward(request, response);
+                    return;
+                }
+                com.mycompany.conta.bancaria.model.Cliente cliente = clienteDAO.buscarClientePorCpf(cpf);
+                if (cliente != null) {
+                    request.setAttribute("saldo", cliente.getSaldo());
+                } else {
+                    request.setAttribute("erro", "Cliente não encontrado.");
+                }
+            } catch (Exception e) {
+                request.setAttribute("erro", "Erro ao consultar saldo. Tente novamente mais tarde.");
+            }
+            request.getRequestDispatcher("saldo.jsp").forward(request, response);
         }
     }
     

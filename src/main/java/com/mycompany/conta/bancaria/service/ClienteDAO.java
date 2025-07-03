@@ -142,5 +142,15 @@ public class ClienteDAO {
         return cpfLimpo.length() == 11;
     }
 
+    /**
+     * Busca um cliente pelo CPF.
+     * @param cpf CPF do cliente
+     * @return Cliente encontrado ou null
+     * @throws SQLException se ocorrer erro de acesso ao banco
+     */
+    public Cliente buscarClientePorCpf(String cpf) throws SQLException {
+        return repository.findClienteByCpf(cpf);
+    }
+
 }
     
