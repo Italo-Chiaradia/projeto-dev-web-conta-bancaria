@@ -1,1 +1,51 @@
+# Compilados Java
+*.class
+
+# Logs
+*.log
+
+# Diretórios de build
+/build/
 /target/
+
+# Arquivos de configuração do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos do IntelliJ IDEA
+.idea/
+!.idea/codeStyles/
+!.idea/inspectionProfiles/
+!.idea/vcs.xml
+*.iml
+
+# Arquivos pessoais do IntelliJ (não versionar)
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries/
+.idea/shelf/
+.idea/dataSources/
+.idea/usage.statistics.xml
+
+# Arquivos do NetBeans
+nbproject/private/
+build/
+dist/
+
+# Arquivos do Maven
+.mvn/
+!/.mvn/wrapper/maven-wrapper.jar
+
+# Arquivos do Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Arquivos temporários
+*.swp
+*.tmp
+*.bak
+~*
+
+# Arquivos de ambiente
+.env
