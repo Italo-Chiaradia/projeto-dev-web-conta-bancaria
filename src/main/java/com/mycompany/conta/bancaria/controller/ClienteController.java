@@ -55,6 +55,24 @@ public class ClienteController extends HttpServlet {
                 request.setAttribute("erro", "Erro ao consultar saldo. Tente novamente mais tarde.");
             }
             request.getRequestDispatcher("saldo.jsp").forward(request, response);
+        } else if (acao.equals("depositoForm")) {
+            request.getRequestDispatcher("deposito.jsp").forward(request, response);
+        } else if (acao.equals("realizarDeposito")) {
+            String cpf = (String) request.getSession().getAttribute("cpf");
+            if (cpf == null) {
+                request.setAttribute("erro", "Usuário não autenticado.");
+                request.getRequestDispatcher("deposito.jsp").forward(request, response);
+                return;
+            }
+            String valor = request.getParameter("valor");
+            try {
+                java.math.BigDecimal novoSaldo = clienteDAO.realizarDeposito(cpf, valor);
+                request.setAttribute("sucesso", "Depósito realizado com sucesso!");
+                request.setAttribute("novoSaldo", novoSaldo);
+            } catch (Exception e) {
+                request.setAttribute("erro", e.getMessage());
+            }
+            request.getRequestDispatcher("deposito.jsp").forward(request, response);
         }
     }
     

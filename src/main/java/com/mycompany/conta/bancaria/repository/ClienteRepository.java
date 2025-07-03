@@ -148,4 +148,20 @@ public class ClienteRepository {
         
         return false;
     }
+
+    /**
+     * Atualiza o saldo do cliente identificado pelo CPF.
+     * @param cpf CPF do cliente
+     * @param novoSaldo Novo saldo a ser definido
+     * @throws SQLException se ocorrer erro de acesso ao banco
+     */
+    public void atualizarSaldoPorCpf(String cpf, java.math.BigDecimal novoSaldo) throws SQLException {
+        final String sql = "UPDATE cliente SET saldo = ? WHERE cpf = ?";
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setBigDecimal(1, novoSaldo);
+            stmt.setString(2, cpf);
+            stmt.executeUpdate();
+        }
+    }
 }

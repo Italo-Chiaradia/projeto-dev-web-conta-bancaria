@@ -6,13 +6,17 @@ package com.mycompany.conta.bancaria.service;
 
 
 import com.mycompany.conta.bancaria.model.Cliente;
+import com.mycompany.conta.bancaria.model.Extrato;
 import com.mycompany.conta.bancaria.repository.ClienteRepository;
+import com.mycompany.conta.bancaria.repository.ExtratoRepository;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.Random;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -22,6 +26,7 @@ import org.mindrot.jbcrypt.BCrypt;
  */
 public class ClienteDAO {
     private final ClienteRepository repository = new ClienteRepository();
+    private final ExtratoRepository extratoRepository = new ExtratoRepository();
     
     /**
      * Método para cadastrar novo cliente no sistema. Com validação de cpf e
@@ -150,6 +155,38 @@ public class ClienteDAO {
      */
     public Cliente buscarClientePorCpf(String cpf) throws SQLException {
         return repository.findClienteByCpf(cpf);
+    }
+
+    /**
+     * Realiza depósito na conta do cliente identificado pelo CPF.
+     * @param cpf CPF do cliente
+     * @param valorDeposito Valor a ser depositado
+     * @return novo saldo após depósito
+     * @throws Exception se valor inválido ou erro de banco
+     */
+    public BigDecimal realizarDeposito(String cpf, String valorDeposito) throws Exception {
+        if (valorDeposito == null) throw new Exception("Valor não informado");
+        BigDecimal valor;
+        try {
+            valor = new BigDecimal(valorDeposito.replace(",", "."));
+        } catch (NumberFormatException e) {
+            throw new Exception("Valor inválido");
+        }
+        if (valor.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new Exception("O valor deve ser maior que zero");
+        }
+        Cliente cliente = repository.findClienteByCpf(cpf);
+        if (cliente == null) throw new Exception("Cliente não encontrado");
+        BigDecimal novoSaldo = cliente.getSaldo().add(valor);
+        repository.atualizarSaldoPorCpf(cpf, novoSaldo);
+        // Registrar no extrato
+        Extrato extrato = new Extrato();
+        extrato.setCreatedAt(new Date());
+        extrato.setTipo("DEPOSITO");
+        extrato.setValor(valor);
+        extrato.setIdCliente(cliente.getId());
+        extratoRepository.registrarTransacao(extrato);
+        return novoSaldo;
     }
 
 }

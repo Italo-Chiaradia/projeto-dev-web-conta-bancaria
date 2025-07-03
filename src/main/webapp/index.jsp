@@ -181,6 +181,7 @@
                 </form>
 
                 <a href="cliente?acao=consultarSaldo" class="login-link">Consultar Saldo</a>
+                <a href="cliente?acao=depositoForm" class="login-link">Fazer Depósito</a>
                 <a href="login.jsp" class="login-link">Fazer Login</a>
             </div>
         </div>
