@@ -73,6 +73,20 @@ public class ClienteController extends HttpServlet {
                 request.setAttribute("erro", e.getMessage());
             }
             request.getRequestDispatcher("deposito.jsp").forward(request, response);
+        } else if (acao.equals("verExtrato")) {
+            String cpf = (String) request.getSession().getAttribute("cpf");
+            if (cpf == null) {
+                request.setAttribute("erro", "Usuário não autenticado.");
+                request.getRequestDispatcher("extrato.jsp").forward(request, response);
+                return;
+            }
+            try {
+                java.util.List<com.mycompany.conta.bancaria.model.Extrato> transacoes = clienteDAO.buscarExtratoPorCpf(cpf);
+                request.setAttribute("transacoes", transacoes);
+            } catch (Exception e) {
+                request.setAttribute("erro", e.getMessage());
+            }
+            request.getRequestDispatcher("extrato.jsp").forward(request, response);
         }
     }
     

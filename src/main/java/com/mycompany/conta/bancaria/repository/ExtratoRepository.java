@@ -6,6 +6,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.sql.ResultSet;
+import java.util.Date;
 
 public class ExtratoRepository {
     /**
@@ -28,5 +32,32 @@ public class ExtratoRepository {
             }
             stmt.executeUpdate();
         }
+    }
+
+    /**
+     * Busca todas as transações do cliente em ordem cronológica decrescente.
+     * @param idCliente ID do cliente
+     * @return Lista de transações
+     * @throws SQLException se ocorrer erro de acesso ao banco
+     */
+    public List<Extrato> buscarTransacoesPorCliente(int idCliente) throws SQLException {
+        List<Extrato> transacoes = new ArrayList<>();
+        final String sql = "SELECT id, created_at, tipo, valor FROM extrato WHERE id_cliente = ? ORDER BY created_at DESC";
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idCliente);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Extrato extrato = new Extrato();
+                    extrato.setId(rs.getInt("id"));
+                    extrato.setCreatedAt(new Date(rs.getTimestamp("created_at").getTime()));
+                    extrato.setTipo(rs.getString("tipo"));
+                    extrato.setValor(rs.getBigDecimal("valor"));
+                    extrato.setIdCliente(idCliente);
+                    transacoes.add(extrato);
+                }
+            }
+        }
+        return transacoes;
     }
 } 

@@ -189,5 +189,17 @@ public class ClienteDAO {
         return novoSaldo;
     }
 
+    /**
+     * Busca o extrato (transações) do cliente pelo CPF.
+     * @param cpf CPF do cliente
+     * @return Lista de transações
+     * @throws Exception se cliente não encontrado ou erro de banco
+     */
+    public java.util.List<Extrato> buscarExtratoPorCpf(String cpf) throws Exception {
+        Cliente cliente = repository.findClienteByCpf(cpf);
+        if (cliente == null) throw new Exception("Cliente não encontrado");
+        return extratoRepository.buscarTransacoesPorCliente(cliente.getId());
+    }
+
 }
     
