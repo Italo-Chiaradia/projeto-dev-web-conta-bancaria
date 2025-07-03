@@ -80,7 +80,7 @@ Este projeto foi desenvolvido por:
 
   * Italo Coelho Ide Chiaradia
   * Eric Leal de Araujo Martins
-  * (coloque seu nome...)
+  * Laion Corcino Faria
 
 ## 🎓 Sobre a Disciplina
 
