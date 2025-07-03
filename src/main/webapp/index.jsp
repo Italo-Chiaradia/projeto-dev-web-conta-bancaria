@@ -180,6 +180,7 @@
                     <button type="submit" class="submit-btn">Cadastrar</button>
                 </form>
 
+                <a href="cliente?acao=consultarSaldo" class="login-link">Consultar Saldo</a>
                 <a href="login.jsp" class="login-link">Fazer Login</a>
             </div>
         </div>
