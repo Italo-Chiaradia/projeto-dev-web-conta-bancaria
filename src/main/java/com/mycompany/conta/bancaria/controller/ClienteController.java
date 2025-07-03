@@ -87,6 +87,24 @@ public class ClienteController extends HttpServlet {
                 request.setAttribute("erro", e.getMessage());
             }
             request.getRequestDispatcher("extrato.jsp").forward(request, response);
+        } else if (acao.equals("saqueForm")) {
+            request.getRequestDispatcher("saque.jsp").forward(request, response);
+        } else if (acao.equals("realizarSaque")) {
+            String cpf = (String) request.getSession().getAttribute("cpf");
+            if (cpf == null) {
+                request.setAttribute("erro", "Usuário não autenticado.");
+                request.getRequestDispatcher("saque.jsp").forward(request, response);
+                return;
+            }
+            String valor = request.getParameter("valor");
+            try {
+                java.math.BigDecimal novoSaldo = clienteDAO.realizarSaque(cpf, valor);
+                request.setAttribute("sucesso", "Saque realizado com sucesso!");
+                request.setAttribute("novoSaldo", novoSaldo);
+            } catch (Exception e) {
+                request.setAttribute("erro", e.getMessage());
+            }
+            request.getRequestDispatcher("saque.jsp").forward(request, response);
         }
     }
     

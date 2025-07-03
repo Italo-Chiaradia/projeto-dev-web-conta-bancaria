@@ -201,5 +201,40 @@ public class ClienteDAO {
         return extratoRepository.buscarTransacoesPorCliente(cliente.getId());
     }
 
+    /**
+     * Realiza saque na conta do cliente identificado pelo CPF.
+     * @param cpf CPF do cliente
+     * @param valorSaque Valor a ser sacado
+     * @return novo saldo após saque
+     * @throws Exception se valor inválido, saldo insuficiente ou erro de banco
+     */
+    public BigDecimal realizarSaque(String cpf, String valorSaque) throws Exception {
+        if (valorSaque == null) throw new Exception("Valor não informado");
+        BigDecimal valor;
+        try {
+            valor = new BigDecimal(valorSaque.replace(",", "."));
+        } catch (NumberFormatException e) {
+            throw new Exception("Valor inválido");
+        }
+        if (valor.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new Exception("O valor deve ser maior que zero");
+        }
+        Cliente cliente = repository.findClienteByCpf(cpf);
+        if (cliente == null) throw new Exception("Cliente não encontrado");
+        if (cliente.getSaldo().compareTo(valor) < 0) {
+            throw new Exception("Saldo insuficiente");
+        }
+        BigDecimal novoSaldo = cliente.getSaldo().subtract(valor);
+        repository.atualizarSaldoPorCpf(cpf, novoSaldo);
+        // Registrar no extrato
+        Extrato extrato = new Extrato();
+        extrato.setCreatedAt(new Date());
+        extrato.setTipo("SAQUE");
+        extrato.setValor(valor);
+        extrato.setIdCliente(cliente.getId());
+        extratoRepository.registrarTransacao(extrato);
+        return novoSaldo;
+    }
+
 }
     
