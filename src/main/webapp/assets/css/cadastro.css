@@ -1,0 +1,157 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : 8 de jul. de 2025, 17:58:56
+    Author     : italo
+*/
+
+/* --- Layout Principal --- */
+.container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+}
+
+.form-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #FFFFFF;
+    padding: 40px;
+}
+
+/* NOVO: Estilos para a seção da imagem */
+.image-section {
+    flex: 1;
+    background-color: #820AD1;
+    display: flex; /* Habilita flexbox para centralizar */
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
+    padding: 40px; /* Adiciona um respiro para a imagem */
+    overflow: hidden; /* Garante que a imagem não saia dos limites */
+}
+
+.image-section img {
+    max-width: 100%; /* Garante que a imagem não ultrapasse a largura da div */
+    max-height: 100%; /* Garante que a imagem não ultrapasse a altura da div */
+    height: auto; /* Mantém a proporção da imagem */
+    border-radius: 20px; /* Adiciona bordas arredondadas à imagem */
+}
+
+
+/* --- Conteúdo do Formulário --- */
+.form-container {
+    width: 100%;
+    max-width: 380px;
+}
+
+.form-container h1 {
+    font-size: 2.2rem;
+    color: #111111;
+    margin-bottom: 40px;
+    font-weight: 600;
+}
+
+/* --- Estilos para Input com Label Flutuante --- */
+.input-group {
+    position: relative;
+    margin-bottom: 35px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px 0;
+    border: none;
+    border-bottom: 2px solid #DDDDDD;
+    background-color: transparent;
+    font-size: 1rem;
+    color: #111111;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.input-group label {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    color: #666666;
+    font-size: 1rem;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+/* Animação da label e da borda */
+.input-group input:focus + label,
+.input-group input:valid + label {
+    top: -20px;
+    font-size: 0.8rem;
+    color: #820AD1;
+}
+
+.input-group input:focus {
+    border-bottom-color: #820AD1;
+}
+
+/* --- Botão e Links --- */
+.submit-btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 24px;
+    background-color: #820AD1;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+    text-transform: uppercase;
+}
+
+.submit-btn:hover {
+    background-color: #6F00B3;
+}
+
+.login-link {
+    display: block;
+    text-align: center;
+    margin-top: 25px;
+    color: #820AD1;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.login-link:hover {
+    text-decoration: underline;
+}
+
+/* --- Mensagem de Erro --- */
+.error-message {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    color: #E83D5A;
+    background-color: #FADEE2;
+    border: 1px solid #E83D5A;
+    text-align: center;
+}
+
+/* --- Responsividade --- */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+    .image-section {
+        display: none;
+    }
+    .form-section {
+        width: 100%;
+        min-height: 100vh;
+        align-items: flex-start;
+        padding-top: 80px;
+    }
+}
