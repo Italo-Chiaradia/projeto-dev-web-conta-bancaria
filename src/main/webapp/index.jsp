@@ -1,7 +1,7 @@
 <%--
     Document   : index
     Created on : 1 de jul. de 2025
-    Author     : italo (Versão estilizada por Gemini com tema Nubank)
+    Author     : italo
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>

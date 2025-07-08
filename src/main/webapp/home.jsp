@@ -29,8 +29,27 @@
                         <h1>Olá, <c:out value="${sessionScope.cliente.nome}"/></h1>
                     </c:if>
                 </div>
-                <div class="user-avatar">
-                    <span>I</span>
+
+                <div class="user-profile">
+                    <div class="user-avatar">
+                        <span><c:out value="${sessionScope.cliente.nome.substring(0, 1)}"/></span>
+                    </div>
+
+                    <div class="profile-card">
+                        <c:if test="${not empty sessionScope.cliente}">
+                            <h4><c:out value="${sessionScope.cliente.nome}"/></h4>
+                            <p>CPF: <c:out value="${sessionScope.cliente.cpf}"/></p>
+
+                            <p>Agência: 0001</p>
+                            <p>Conta: 12345-6</p>
+
+                            <hr>
+
+                            <a href="cliente?acao=logout" class="logout-btn">
+                                <i class="fa-solid fa-right-from-bracket"></i> Sair
+                            </a>
+                        </c:if>
+                    </div>
                 </div>
             </div>
         </header>

@@ -1,7 +1,7 @@
 <%--
     Document   : login
     Created on : 1 de jul. de 2025, 20:23:32
-    Author     : italo (Versão estilizada por Gemini)
+    Author     : italo
 --%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>

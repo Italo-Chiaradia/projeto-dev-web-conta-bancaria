@@ -111,6 +111,17 @@ public class ClienteController extends HttpServlet {
                         dispatcher.forward(request, response);
                     }       break;
                 }
+            case "logout":
+                {
+                    HttpSession session = request.getSession(false);
+
+                    if (session != null) {
+                        session.invalidate();
+                    }
+
+                    response.sendRedirect(request.getContextPath() + "/login.jsp");
+                    break;
+                } 
             case "consultarSaldo":
                 try {
                     

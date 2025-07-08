@@ -182,3 +182,88 @@ main {
 
 .amount.positive { color: var(--green); }
 .amount.negative { color: var(--red); }
+
+/* assets/css/home.css */
+
+/* --- Estilos do Perfil do Usuário no Header --- */
+
+/* ... (o estilo .user-profile continua o mesmo) ... */
+.user-profile {
+    position: relative;
+    cursor: pointer;
+}
+
+
+/* --- CÓDIGO ATUALIZADO ABAIXO --- */
+
+/* O card de informações */
+.profile-card {
+    /* Começa invisível e transparente */
+    opacity: 0;
+    visibility: hidden;
+    
+    /* Move um pouco para baixo para um efeito de "aparecer" */
+    transform: translateY(10px);
+
+    /* Adiciona a transição suave */
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+
+    /* O resto do estilo é o mesmo */
+    position: absolute;
+    top: 110%; /* Ajuste fino na posição */
+    right: 0;
+    width: 260px;
+    background-color: var(--white);
+    color: var(--dark-text);
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    padding: 20px;
+    z-index: 100;
+    border: 1px solid #eee;
+}
+
+/* Faz o card aparecer quando o mouse está sobre o container */
+.user-profile:hover .profile-card {
+    /* Torna o card visível e opaco */
+    opacity: 1;
+    visibility: visible;
+    /* Move para a posição final */
+    transform: translateY(0);
+}
+
+/* Estilos internos do card */
+.profile-card h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.profile-card p {
+    font-size: 0.9rem;
+    color: var(--gray-text);
+    line-height: 1.6;
+}
+
+.profile-card hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 15px 0;
+}
+
+/* Botão de Logout */
+.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: 500;
+    color: var(--red);
+    transition: background-color 0.2s;
+}
+
+.logout-btn:hover {
+    background-color: #fce8eac4;
+}
