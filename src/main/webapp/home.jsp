@@ -3,7 +3,7 @@
     Created on : 8 de jul. de 2025, 18:39:18
     Author     : italo
 --%>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -12,228 +12,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bankly - Home</title>
 
-    <link rel="icon" type="image/png" href="URL_DO_SEU_ICONE_AQUI.png" />
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="./assets/icon-bankly.png" />
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    <style>
-        /* --- Reset e Estilos Globais --- */
-        :root {
-            --purple: #820AD1;
-            --light-purple: #f3e5f5;
-            --dark-text: #111111;
-            --gray-text: #666666;
-            --background: #F0F1F5;
-            --white: #FFFFFF;
-            --green: #00A34D;
-            --red: #E83D5A;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--background);
-            color: var(--dark-text);
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        /* --- Estrutura Principal --- */
-        .dashboard-container {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* --- Cabeçalho --- */
-        header {
-            background-color: var(--purple);
-            padding: 25px 5%;
-            color: var(--white);
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .header-content h1 {
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .user-avatar {
-            width: 50px;
-            height: 50px;
-            background-color: var(--light-purple);
-            color: var(--purple);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        /* --- Conteúdo Principal --- */
-        main {
-            padding: 20px 5%;
-            max-width: 1200px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        /* --- Seção de Saldos --- */
-        .balance-section {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .card {
-            background-color: var(--white);
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: var(--gray-text);
-            font-size: 1rem;
-            margin-bottom: 10px;
-        }
-
-        .card-header i {
-            font-size: 1.2rem;
-        }
-
-        .card-balance {
-            font-size: 2rem;
-            font-weight: 600;
-            color: var(--dark-text);
-        }
-
-        /* --- Seção de Ações Rápidas --- */
-        .actions-section h2 {
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-        
-        .quick-actions {
-            display: flex;
-            gap: 15px;
-            overflow-x: auto; /* Permite rolar horizontalmente em telas pequenas */
-            padding-bottom: 15px;
-        }
-
-        .action-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            text-align: center;
-        }
-
-        .action-icon {
-            width: 70px;
-            height: 70px;
-            background-color: var(--light-purple);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.5rem;
-            color: var(--purple);
-            transition: background-color 0.2s;
-        }
-        
-        .action-item span {
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-
-        .action-item:hover .action-icon {
-            background-color: #e9d8f5;
-        }
-
-        /* --- Seção de Movimentações --- */
-        .transactions-section {
-            margin-top: 30px;
-        }
-
-        .transactions-section h2 {
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-
-        .transaction-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        
-        .transaction-item {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            background-color: var(--white);
-            border-radius: 8px;
-        }
-        
-        .transaction-icon {
-            font-size: 1.5rem;
-            margin-right: 15px;
-            color: var(--gray-text);
-        }
-        
-        .transaction-details {
-            flex-grow: 1;
-        }
-        
-        .transaction-details p {
-            line-height: 1.4;
-        }
-        
-        .transaction-description {
-            font-weight: 500;
-        }
-        
-        .transaction-date {
-            font-size: 0.8rem;
-            color: var(--gray-text);
-        }
-
-        .transaction-amount {
-            font-weight: 600;
-            font-size: 1rem;
-        }
-        
-        .amount.positive { color: var(--green); }
-        .amount.negative { color: var(--red); }
-        
-    </style>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/home.css">
 </head>
 <body>
 
@@ -241,7 +25,9 @@
         <header>
             <div class="header-content">
                 <div class="welcome-message">
-                    <h1>Olá, Italo</h1>
+                    <c:if test="${not empty sessionScope.cliente}">
+                        <h1>Olá, <c:out value="${sessionScope.cliente.nome}"/></h1>
+                    </c:if>
                 </div>
                 <div class="user-avatar">
                     <span>I</span>

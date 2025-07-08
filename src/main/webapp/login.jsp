@@ -15,17 +15,6 @@
     <link rel="icon" type="image/x-icon" href="./assets/icon-bankly.png" />
     <link rel="stylesheet" href="./assets/css/styles.css">
     <link rel="stylesheet" href="./assets/css/cadastro.css">
-    <style>
-        .register-link {
-            display: block;
-            text-align: center;
-            margin-top: 25px;
-            color: #820AD1;
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-    </style>
 </head>
 <body>
 

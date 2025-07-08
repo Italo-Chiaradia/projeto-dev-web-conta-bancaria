@@ -9,12 +9,6 @@ import com.mycompany.conta.bancaria.model.Cliente;
 import com.mycompany.conta.bancaria.model.Extrato;
 import com.mycompany.conta.bancaria.repository.ClienteRepository;
 import com.mycompany.conta.bancaria.repository.ExtratoRepository;
-import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Date;
@@ -30,131 +24,50 @@ public class ClienteService {
     private final ExtratoRepository extratoRepository = new ExtratoRepository();
     
     /**
-     * Método para cadastrar novo cliente no sistema. Com validação de cpf e
-     * senha antes da inserção no banco de dados.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * Método para cadastrar novo cliente no sistema
+     * @param nome
+     * @param cpf
+     * @param senha
      * @throws java.sql.SQLException
      */
-    public void cadastrarCliente(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException, SQLException {
-        
-            String nome = request.getParameter("nome");
-            String cpf = request.getParameter("cpf");
-            String senha = request.getParameter("senha");
-            String senhaConfirma = request.getParameter("senha-confirma");
+    public void cadastrarCliente(String nome, String cpf, String senha) throws SQLException {
             
-            // cpf sem pontos e traços, só com os numeros
-            String cpfLimpo = cpf.replaceAll("[^\\d]", "");
-            
-            // Verificar se o cpf é válido
-            if (!isCpfValido(cpf)) {
-                request.setAttribute("erro", "Formato do CPF é inválido!");
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp");
-                if (dispatcher!=null)
-                    dispatcher.forward(request, response);
-                return;
-            }
-            
-            // Verificar senhas
-            if (!senha.equals(senhaConfirma)) {
-                request.setAttribute("erro", "Senhas não coincidem!");
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp");
-                if (dispatcher!=null)
-                    dispatcher.forward(request, response);
-                return;
-            }
-            
-            // Verifica se já existe cpf cadastrado
-            if (checkIfCpfAlreadyExists(cpfLimpo)) {
-                request.setAttribute("erro", "CPF já cadastrado no sistema!");
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp");
-                if (dispatcher!=null)
-                    dispatcher.forward(request, response);
-                return;
-            }
-            
-            try {
-                Cliente novoCliente = new Cliente();
-                
-                novoCliente.setNome(nome);
-                novoCliente.setCpf(cpf.replaceAll("[^\\d]", ""));
-                
-                // Gera o hash da senha
-                String senhaHash = BCrypt.hashpw(senha, BCrypt.gensalt(12));
-                novoCliente.setSenhaHash(senhaHash);
-                
-                // Gera numero da conta
-                Long contaBancaria = gerarNumeroContaBancaria();
-                novoCliente.setContaBancaria(contaBancaria);
+        Cliente novoCliente = new Cliente();
 
-                repository.save(novoCliente);
+        novoCliente.setNome(nome);
+        novoCliente.setCpf(cpf.replaceAll("[^\\d]", ""));
 
-                response.sendRedirect("login.jsp");
-                
-            } catch (SQLException e) {
-                System.err.println("Falha ao salvar novo cliente: " + e.getMessage());
-                
-                request.setAttribute("erro", "Erro ao criar conta!");
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp");
-                
-                dispatcher.forward(request, response);
-            }
+        // Gera o hash da senha
+        String senhaHash = BCrypt.hashpw(senha, BCrypt.gensalt(12));
+        novoCliente.setSenhaHash(senhaHash);
+
+        // Gera numero da conta
+        Long contaBancaria = gerarNumeroContaBancaria();
+        novoCliente.setContaBancaria(contaBancaria);
+
+        repository.save(novoCliente);
             
     }
     
     /**
-     * Realiza a autenticação de um cliente com base nos parâmetros fornecidos na requisição HTTP.
+     * Realiza a autenticação de um cliente
      *
-     * @param request  a requisição HTTP contendo os parâmetros de autenticação (cpf, senha)
-     * @param response a resposta HTTP, se necessário para controle adicional
-     * @throws SQLException se ocorrer um erro no acesso ao banco de dados
-     * @throws jakarta.servlet.ServletException
-     * @throws java.io.IOException
+     * @param cpf
+     * @param senha
+     * @return 
+     * @throws java.sql.SQLException 
      */
-    public void autenticarCliente(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
-        
-        String cpf = request.getParameter("cpf");
-        String senha = request.getParameter("senha");
-        
-        // cpf sem pontos e traços, só com os numeros
-        String cpfLimpo = cpf.replaceAll("[^\\d]", "");
-        
-        // Verificar se o cpf é válido
-        if (!isCpfValido(cpfLimpo)) {
-            request.setAttribute("erro", "Formato do CPF é inválido!");
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/login.jsp");
-            if (dispatcher!=null)
-                dispatcher.forward(request, response);
-            return;
-        }
-        
+    public Cliente autenticarCliente(String cpf, String senha) throws SQLException {
+                
+        Cliente cliente = repository.findClienteByCpf(cpf);
 
-        Cliente cliente = repository.findClienteByCpf(cpfLimpo);
-
-        if (cliente == null) {
-            request.setAttribute("erro", "Senha ou CPF inválidos!");
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/login.jsp");
-            if (dispatcher!=null)
-                dispatcher.forward(request, response);
-            return;
-        }
-
+        if (cliente == null) return null;
+       
         boolean senhaValida = BCrypt.checkpw(senha, cliente.getSenhaHash());
 
-        if (!senhaValida) {
-            request.setAttribute("erro", "Senha ou CPF inválidos!");
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/login.jsp");
-            if (dispatcher!=null)
-                dispatcher.forward(request, response);
-            return;
-        }
-
-        HttpSession session = request.getSession();
-        session.setAttribute("cliente", cliente);
-        response.sendRedirect("home.jsp");
+        if (!senhaValida) return null;
+        
+        return cliente;
     }
 
     

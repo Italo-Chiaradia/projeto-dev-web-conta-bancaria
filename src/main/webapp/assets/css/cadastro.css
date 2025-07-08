@@ -155,3 +155,13 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
         padding-top: 80px;
     }
 }
+
+.register-link {
+    display: block;
+    text-align: center;
+    margin-top: 25px;
+    color: #820AD1;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
