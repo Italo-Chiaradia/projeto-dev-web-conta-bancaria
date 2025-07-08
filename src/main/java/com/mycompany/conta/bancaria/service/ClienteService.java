@@ -21,9 +21,6 @@ import java.util.Date;
 import java.util.Random;
 import org.mindrot.jbcrypt.BCrypt;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  *
  * @author italo
@@ -157,7 +154,7 @@ public class ClienteService {
 
         HttpSession session = request.getSession();
         session.setAttribute("cliente", cliente);
-        response.sendRedirect("extrato.jsp");
+        response.sendRedirect("home.jsp");
     }
 
     
