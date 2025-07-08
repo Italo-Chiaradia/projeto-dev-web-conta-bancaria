@@ -13,6 +13,7 @@ import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -20,11 +21,14 @@ import java.util.Date;
 import java.util.Random;
 import org.mindrot.jbcrypt.BCrypt;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  *
  * @author italo
  */
-public class ClienteDAO {
+public class ClienteService {
     private final ClienteRepository repository = new ClienteRepository();
     private final ExtratoRepository extratoRepository = new ExtratoRepository();
     
@@ -103,6 +107,59 @@ public class ClienteDAO {
             }
             
     }
+    
+    /**
+     * Realiza a autenticação de um cliente com base nos parâmetros fornecidos na requisição HTTP.
+     *
+     * @param request  a requisição HTTP contendo os parâmetros de autenticação (cpf, senha)
+     * @param response a resposta HTTP, se necessário para controle adicional
+     * @throws SQLException se ocorrer um erro no acesso ao banco de dados
+     * @throws jakarta.servlet.ServletException
+     * @throws java.io.IOException
+     */
+    public void autenticarCliente(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
+        
+        String cpf = request.getParameter("cpf");
+        String senha = request.getParameter("senha");
+        
+        // cpf sem pontos e traços, só com os numeros
+        String cpfLimpo = cpf.replaceAll("[^\\d]", "");
+        
+        // Verificar se o cpf é válido
+        if (!isCpfValido(cpfLimpo)) {
+            request.setAttribute("erro", "Formato do CPF é inválido!");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/login.jsp");
+            if (dispatcher!=null)
+                dispatcher.forward(request, response);
+            return;
+        }
+        
+
+        Cliente cliente = repository.findClienteByCpf(cpfLimpo);
+
+        if (cliente == null) {
+            request.setAttribute("erro", "Senha ou CPF inválidos!");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/login.jsp");
+            if (dispatcher!=null)
+                dispatcher.forward(request, response);
+            return;
+        }
+
+        boolean senhaValida = BCrypt.checkpw(senha, cliente.getSenhaHash());
+
+        if (!senhaValida) {
+            request.setAttribute("erro", "Senha ou CPF inválidos!");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/login.jsp");
+            if (dispatcher!=null)
+                dispatcher.forward(request, response);
+            return;
+        }
+
+        HttpSession session = request.getSession();
+        session.setAttribute("cliente", cliente);
+        response.sendRedirect("extrato.jsp");
+    }
+
     
     /**
     * Verifica se o cpf passado como parâmetro já existe

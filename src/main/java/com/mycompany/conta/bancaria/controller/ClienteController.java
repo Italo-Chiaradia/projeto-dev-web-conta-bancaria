@@ -1,6 +1,6 @@
 package com.mycompany.conta.bancaria.controller;
 
-import com.mycompany.conta.bancaria.service.ClienteDAO;
+import com.mycompany.conta.bancaria.service.ClienteService;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  */
 @WebServlet(name = "ClienteController", urlPatterns = {"/cliente"})
 public class ClienteController extends HttpServlet {
-    private final ClienteDAO clienteDAO = new ClienteDAO();
+    private final ClienteService clienteService = new ClienteService();
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -35,7 +35,9 @@ public class ClienteController extends HttpServlet {
         String acao = request.getParameter("acao");
         
         if (acao.equals("cadastro")) {            
-            clienteDAO.cadastrarCliente(request, response);
+            clienteService.cadastrarCliente(request, response);
+        } else if (acao.equals("login")) {
+            clienteService.autenticarCliente(request, response);
         } else if (acao.equals("consultarSaldo")) {
             try {
 
@@ -45,7 +47,7 @@ public class ClienteController extends HttpServlet {
                     request.getRequestDispatcher("saldo.jsp").forward(request, response);
                     return;
                 }
-                com.mycompany.conta.bancaria.model.Cliente cliente = clienteDAO.buscarClientePorCpf(cpf);
+                com.mycompany.conta.bancaria.model.Cliente cliente = clienteService.buscarClientePorCpf(cpf);
                 if (cliente != null) {
                     request.setAttribute("saldo", cliente.getSaldo());
                 } else {
@@ -66,7 +68,7 @@ public class ClienteController extends HttpServlet {
             }
             String valor = request.getParameter("valor");
             try {
-                java.math.BigDecimal novoSaldo = clienteDAO.realizarDeposito(cpf, valor);
+                java.math.BigDecimal novoSaldo = clienteService.realizarDeposito(cpf, valor);
                 request.setAttribute("sucesso", "Depósito realizado com sucesso!");
                 request.setAttribute("novoSaldo", novoSaldo);
             } catch (Exception e) {
@@ -81,7 +83,7 @@ public class ClienteController extends HttpServlet {
                 return;
             }
             try {
-                java.util.List<com.mycompany.conta.bancaria.model.Extrato> transacoes = clienteDAO.buscarExtratoPorCpf(cpf);
+                java.util.List<com.mycompany.conta.bancaria.model.Extrato> transacoes = clienteService.buscarExtratoPorCpf(cpf);
                 request.setAttribute("transacoes", transacoes);
             } catch (Exception e) {
                 request.setAttribute("erro", e.getMessage());
@@ -98,7 +100,7 @@ public class ClienteController extends HttpServlet {
             }
             String valor = request.getParameter("valor");
             try {
-                java.math.BigDecimal novoSaldo = clienteDAO.realizarSaque(cpf, valor);
+                java.math.BigDecimal novoSaldo = clienteService.realizarSaque(cpf, valor);
                 request.setAttribute("sucesso", "Saque realizado com sucesso!");
                 request.setAttribute("novoSaldo", novoSaldo);
             } catch (Exception e) {
