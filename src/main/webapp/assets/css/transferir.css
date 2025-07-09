@@ -1,0 +1,132 @@
+/* CSS completo para a página de transferência */
+
+.form-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 30px 5%;
+}
+
+.form-container h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--dark-text);
+    margin-bottom: 5px;
+}
+
+.form-container .subtitle {
+    font-size: 1rem;
+    color: var(--gray-text);
+    margin-bottom: 30px;
+}
+
+.form-container .card {
+    padding: 30px 35px;
+}
+
+.form-layout .form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-layout label {
+    font-weight: 500;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.form-layout input[type="text"],
+.form-layout input[type="password"],
+.form-layout input[type="email"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-layout input:focus {
+    outline: none;
+    border-color: var(--purple);
+    box-shadow: 0 0 0 3px var(--light-purple);
+}
+
+.form-group-inline {
+    display: flex;
+    gap: 20px;
+}
+
+.form-group-inline .form-group {
+    flex: 1;
+}
+
+.form-actions {
+    margin-top: 30px;
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+}
+
+.btn {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    transition: opacity 0.2s;
+}
+
+.btn:hover {
+    opacity: 0.85;
+}
+
+.btn-primary {
+    background-color: var(--purple);
+    color: var(--white);
+}
+
+.btn-secondary {
+    background-color: #e9ecef;
+    color: var(--dark-text);
+    border: 1px solid #ccc;
+}
+
+/* Alertas de mensagem */
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    font-size: 0.95rem;
+}
+
+.alert-success {
+    color: #0f5132;
+    background-color: #d1e7dd;
+    border-color: #badbcc;
+}
+
+.alert-danger {
+    color: #842029;
+    background-color: #f8d7da;
+    border-color: #f5c2c7;
+}
+
+/* Link de voltar centralizado (do extrato.css) */
+.back-link {
+    display: block;
+    text-align: center;
+    margin-top: 30px;
+    font-weight: 500;
+    color: var(--purple);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.back-link:hover {
+    color: #6d3aa8;
+}

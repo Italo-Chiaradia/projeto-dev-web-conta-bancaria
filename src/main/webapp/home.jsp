@@ -74,7 +74,7 @@
 
             <section class="actions-section">
                 <nav class="quick-actions">
-                    <a href="#" class="action-item">
+                    <a href="transferir.jsp" class="action-item">
                         <div class="action-icon"><i class="fa-solid fa-money-bill-transfer"></i></div>
                         <span>Transferir</span>
                     </a>

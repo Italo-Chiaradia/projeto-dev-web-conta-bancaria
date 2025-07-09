@@ -7,13 +7,16 @@ package com.mycompany.conta.bancaria.service;
 
 import com.mycompany.conta.bancaria.model.Cliente;
 import com.mycompany.conta.bancaria.model.Extrato;
+import com.mycompany.conta.bancaria.model.Transferencias;
 import com.mycompany.conta.bancaria.repository.ClienteRepository;
 import com.mycompany.conta.bancaria.repository.ExtratoRepository;
+import com.mycompany.conta.bancaria.repository.TransferenciaRepository;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Random;
 import org.mindrot.jbcrypt.BCrypt;
+
 
 /**
  *
@@ -22,6 +25,8 @@ import org.mindrot.jbcrypt.BCrypt;
 public class ClienteService {
     private final ClienteRepository repository = new ClienteRepository();
     private final ExtratoRepository extratoRepository = new ExtratoRepository();
+    private final TransferenciaRepository transferenciaRepository = new TransferenciaRepository();
+
     
     /**
      * Método para cadastrar novo cliente no sistema
@@ -202,6 +207,75 @@ public class ClienteService {
         extratoRepository.registrarTransacao(extrato);
         return novoSaldo;
     }
+    public void realizarTransferencia(String cpfRemetente, String contaDestinoStr, String valorTransferenciaStr) throws Exception {
+        // 1. Validação do Valor
+        if (valorTransferenciaStr == null || valorTransferenciaStr.isBlank()) {
+            throw new Exception("Valor não informado");
+        }
+        BigDecimal valor;
+        try {
+            valor = new BigDecimal(valorTransferenciaStr.replace(",", "."));
+        } catch (NumberFormatException e) {
+            throw new Exception("Valor inválido");
+        }
+        if (valor.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new Exception("O valor da transferência deve ser maior que zero");
+        }
 
+        // 2. Validação das Contas
+        Cliente remetente = repository.findClienteByCpf(cpfRemetente);
+        if (remetente == null) {
+            throw new Exception("Falha ao identificar o remetente.");
+        }
+
+        Long contaDestinoNumero = Long.parseLong(contaDestinoStr.replaceAll("[^\\d]", ""));
+        Cliente destinatario = repository.findClienteByContaBancaria(contaDestinoNumero);
+
+        if (destinatario == null) {
+            throw new Exception("Conta de destino não encontrada");
+        }
+
+        if (remetente.getId().equals(destinatario.getId())) {
+            throw new Exception("Você não pode transferir para a sua própria conta.");
+        }
+
+        // 3. Validação do Saldo
+        if (remetente.getSaldo().compareTo(valor) < 0) {
+            throw new Exception("Saldo insuficiente");
+        }
+
+        // 4. Cria e salva o registro principal da transferência
+        Transferencias novaTransferencia = new Transferencias();
+        novaTransferencia.setValor(valor);
+        novaTransferencia.setCreatedAt(new java.util.Date());
+        novaTransferencia.setIdRemetente(remetente.getId());
+        novaTransferencia.setIdDestinatario(destinatario.getId());
+
+        novaTransferencia = transferenciaRepository.registrarTransferencia(novaTransferencia);
+
+        // 5. Atualiza o saldo das duas contas
+        BigDecimal novoSaldoRemetente = remetente.getSaldo().subtract(valor);
+        BigDecimal novoSaldoDestinatario = destinatario.getSaldo().add(valor);
+
+        repository.atualizarSaldoPorCpf(remetente.getCpf(), novoSaldoRemetente);
+        repository.atualizarSaldoPorCpf(destinatario.getCpf(), novoSaldoDestinatario);
+
+        // 6. Registra as duas transações no extrato
+        Extrato extratoRemetente = new Extrato();
+        extratoRemetente.setIdCliente(remetente.getId());
+        extratoRemetente.setIdTransferencia(novaTransferencia.getId());
+        extratoRemetente.setCreatedAt(new java.util.Date());
+        extratoRemetente.setTipo("TRANSFERENCIA_ENVIADA");
+        extratoRemetente.setValor(valor.negate());
+        extratoRepository.registrarTransacao(extratoRemetente);
+
+        Extrato extratoDestinatario = new Extrato();
+        extratoDestinatario.setIdCliente(destinatario.getId());
+        extratoDestinatario.setIdTransferencia(novaTransferencia.getId());
+        extratoDestinatario.setCreatedAt(new java.util.Date());
+        extratoDestinatario.setTipo("TRANSFERENCIA_RECEBIDA");
+        extratoDestinatario.setValor(valor);
+        extratoRepository.registrarTransacao(extratoDestinatario);
+    }
 }
     
