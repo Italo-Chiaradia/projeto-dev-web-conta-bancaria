@@ -1,9 +1,67 @@
-/*
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
-*/
-/* 
-    Created on : 8 de jul. de 2025, 20:49:28
-    Author     : Eric
-*/
+/* assets/css/extrato.css */
 
+/* Remove o preenchimento do card para a tabela ocupar todo o espaço */
+.transactions-section .card {
+    padding: 0;
+    overflow: hidden; /* Garante que a tabela respeite as bordas arredondadas */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    text-align: left;
+    padding: 18px 25px; /* Alinha o padding com os cards da home */
+    border-bottom: 1px solid #f0f0f0; /* Linha separadora sutil */
+}
+
+/* Remove a borda do último item para um acabamento limpo */
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+th {
+    background-color: #f9f9fb; /* Um fundo muito sutil para o cabeçalho */
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--gray-text);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+td {
+    color: var(--dark-text);
+    font-size: 0.95rem;
+}
+
+/* Estiliza a coluna de valor para usar as cores padrão */
+.transaction-amount {
+    font-weight: 600;
+}
+
+/* As classes .positive e .negative já existem no seu home.css, então serão aplicadas automaticamente! */
+
+/* Mensagem de "nenhuma transação" dentro do card */
+.info-msg {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--gray-text);
+    font-size: 1rem;
+}
+
+/* Link de voltar centralizado */
+.back-link {
+    display: block;
+    text-align: center;
+    margin-top: 30px;
+    font-weight: 500;
+    color: var(--purple);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.back-link:hover {
+    color: #6d3aa8;
+}
