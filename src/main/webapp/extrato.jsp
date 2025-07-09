@@ -3,6 +3,7 @@
 <html>
 <head>
     <title>Extrato</title>
+    <link rel="stylesheet" href="extrato.jsp"
 </head>
 <body>
     <h2>Extrato da Conta</h2>
@@ -30,6 +31,6 @@
             <p>Nenhuma transação encontrada nesse período.</p>
         </c:otherwise>
     </c:choose>
-    <a href="index.jsp">Voltar para a página principal</a>
+    <a href="home.jsp">Voltar para a página principal</a>
 </body>
 </html>

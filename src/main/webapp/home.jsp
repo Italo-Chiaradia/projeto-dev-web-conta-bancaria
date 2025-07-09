@@ -82,10 +82,10 @@
                         <div class="action-icon"><i class="fa-solid fa-piggy-bank"></i></div>
                         <span>Investir</span>
                     </a>
-                    <a href="#" class="action-item">
+                    <a href="extrato.jsp" class="action-item">
                         <div class="action-icon"><i class="fa-solid fa-receipt"></i></div>
                         <span>Extrato</span>
-                    </a>
+                    </a>    
                 </nav>
             </section>
             

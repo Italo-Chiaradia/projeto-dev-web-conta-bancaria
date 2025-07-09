@@ -20,6 +20,6 @@
         <input type="text" id="valor" name="valor" required />
         <button type="submit">Sacar</button>
     </form>
-    <a href="index.jsp">Voltar para a página principal</a>
+    <a href="home.jsp">Voltar para a página principal</a>
 </body>
 </html> 
