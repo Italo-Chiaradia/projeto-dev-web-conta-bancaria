@@ -4,6 +4,8 @@
     Author     : italo
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:setLocale value="pt_BR" />
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -40,8 +42,8 @@
                             <h4><c:out value="${sessionScope.cliente.nome}"/></h4>
                             <p>CPF: <c:out value="${sessionScope.cliente.cpf}"/></p>
 
-                            <p>Agência: 0001</p>
-                            <p>Conta: 12345-6</p>
+                            <p>Agência: <c:out value="${sessionScope.cliente.agencia}"/></p>
+                            <p>Conta: <c:out value="${sessionScope.cliente.contaBancaria}"/></p>
 
                             <hr>
 
@@ -61,14 +63,14 @@
                         <span>Saldo disponível</span>
                         <i class="fa-regular fa-eye"></i>
                     </div>
-                    <p class="card-balance">R$ 4.250,75</p>
+                    <p class="card-balance"><fmt:formatNumber value="${sessionScope.cliente.saldo}" type="currency" currencySymbol="R$ "/></p>
                 </div>
                 <div class="card">
                     <div class="card-header">
                         <span>Dinheiro investido</span>
                         <i class="fa-solid fa-chart-line"></i>
                     </div>
-                    <p class="card-balance">R$ 12.800,00</p>
+                    <p class="card-balance"><fmt:formatNumber value="${sessionScope.cliente.saldoInvestido}" type="currency" currencySymbol="R$ "/></p>
                 </div>
             </section>
 

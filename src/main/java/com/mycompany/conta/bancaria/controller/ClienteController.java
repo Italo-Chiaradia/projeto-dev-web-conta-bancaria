@@ -81,8 +81,8 @@ public class ClienteController extends HttpServlet {
                 }
             case "login":
                 {
-                    String cpf = request.getParameter("cpf");
-                    String senha = request.getParameter("senha").replaceAll("[^\\d]", "");
+                    String cpf = request.getParameter("cpf").replaceAll("[^\\d]", "");
+                    String senha = request.getParameter("senha");
                     // Verificar se o cpf é válido
                     if (!clienteService.isCpfValido(cpf)) {
                         request.setAttribute("erro", "Formato do CPF é inválido!");
@@ -216,6 +216,12 @@ public class ClienteController extends HttpServlet {
                     } catch (Exception e) {
                         request.setAttribute("erro", e.getMessage());
                     }
+
+                    // Busca o cliente atualizado do banco (com saldo novo)
+                    Cliente clienteAtualizado = clienteService.buscarClientePorCpf(clienteLogado.getCpf());
+
+                    // Atualiza o cliente na sessão
+                    request.getSession().setAttribute("cliente", clienteAtualizado);
 
                     request.getRequestDispatcher("transferir.jsp").forward(request, response);
                     break;
