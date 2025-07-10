@@ -82,40 +82,41 @@ public class ClienteController extends HttpServlet {
                         dispatcher.forward(request, response);
                     }       break;    
                 }
-            case "login":
-                {
+            case "login": {
                     String cpf = request.getParameter("cpf").replaceAll("[^\\d]", "");
                     String senha = request.getParameter("senha");
-                    // Verificar se o cpf é válido
-                    if (!clienteService.isCpfValido(cpf)) {
-                        request.setAttribute("erro", "Formato do CPF é inválido!");
-                        RequestDispatcher dispatcher = request.getRequestDispatcher("/login.jsp");
-                        if (dispatcher!=null)
-                            dispatcher.forward(request, response);
-                        return;
-                    }
+
                     try {
                         Cliente clienteAutenticado = clienteService.autenticarCliente(cpf, senha);
-                        
+
+                        // Se a autenticação falhar, clienteAutenticado será nulo
                         if (clienteAutenticado == null) {
-                            request.setAttribute("erro", "Senha ou CPF inválidos!");
+                            // 1. Define o atributo "erro" na requisição
+                            request.setAttribute("erro", "CPF ou senha inválidos!");
+
+                            // 2. Encaminha (forward) de volta para a página de login, levando a requisição junto
                             RequestDispatcher dispatcher = request.getRequestDispatcher("/login.jsp");
-                            if (dispatcher!=null) dispatcher.forward(request, response);
+                            dispatcher.forward(request, response);
+                            return; // Encerra a execução aqui
                         }
-                        
+
+                        // Se a autenticação for bem-sucedida...
                         HttpSession session = request.getSession();
                         session.setAttribute("cliente", clienteAutenticado);
+
                         List<ExtratoCompleto> ultimasMovimentacoes = clienteService.buscarUltimasMovimentacoesExtratoPorCpf(clienteAutenticado.getCpf(), 3);
                         session.setAttribute("ultimasMovimentacoes", ultimasMovimentacoes);
+
                         response.sendRedirect("home.jsp");
+
                     } catch (Exception e) {
-                        System.err.println("Falha ao tentar entrar no sistema: " + e.getMessage());
-                        
-                        request.setAttribute("erro", "Erro ao entrar conta!");
+                        // Em caso de erro de banco de dados, etc.
+                        System.err.println("Falha no processo de login: " + e.getMessage());
+                        request.setAttribute("erro", "Ocorreu um erro no sistema. Tente novamente.");
                         RequestDispatcher dispatcher = request.getRequestDispatcher("/login.jsp");
-                        
                         dispatcher.forward(request, response);
-                    }       break;
+                    }
+                    break;
                 }
             case "logout":
                 {

@@ -36,6 +36,13 @@
                 </c:if>
 
                 <form action="cliente?acao=login" method="post">
+                        
+                <c:if test="${not empty erro}">
+                    <div class="error-message">
+                        ${erro}
+                    </div>
+                </c:if>
+
                     <div class="input-group">
                         <input id="cpf" name="cpf" type="text" required />
                         <label for="cpf">CPF</label>
