@@ -79,7 +79,7 @@
 
             <section class="actions-section">
                 <nav class="quick-actions">
-                    <a href="transferir.jsp" class="action-item">
+                    <a href="transferencia.jsp" class="action-item">
                         <div class="action-icon"><i class="fa-solid fa-money-bill-transfer"></i></div>
                         <span>Transferir</span>
                     </a>
@@ -87,7 +87,7 @@
                         <div class="action-icon"><i class="fa-solid fa-piggy-bank"></i></div>
                         <span>Investir</span>
                     </a>
-                    <a href="extrato.jsp" class="action-item">
+                    <a href="cliente?acao=verExtrato" class="action-item">
                         <div class="action-icon"><i class="fa-solid fa-receipt"></i></div>
                         <span>Extrato</span>
                     </a>    
@@ -113,6 +113,17 @@
                                         </p>
                                     </c:when>
 
+                                    <c:when test="${movimentacoes.tipo == 'SAQUE'}">
+                                        <p class="descricao">
+                                            <strong>Saque</strong>
+                                        </p>
+                                    </c:when>
+                                        
+                                    <c:when test="${movimentacoes.tipo == 'DEPOSITO'}">
+                                        <p class="descricao">
+                                            <strong>Depósito</strong>
+                                        </p>
+                                    </c:when>
                                     <%-- Outros casos como DEPOSITO, SAQUE, etc. --%>
                                 </c:choose>
                                 <p class="transaction-date"><fmt:formatDate value="${movimentacoes.createdAt}" pattern="dd MMM, yyyy" /></p>

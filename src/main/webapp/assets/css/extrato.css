@@ -1,67 +1,125 @@
-/* assets/css/extrato.css */
 
-/* Remove o preenchimento do card para a tabela ocupar todo o espaço */
-.transactions-section .card {
-    padding: 0;
-    overflow: hidden; /* Garante que a tabela respeite as bordas arredondadas */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th, td {
-    text-align: left;
-    padding: 18px 25px; /* Alinha o padding com os cards da home */
-    border-bottom: 1px solid #f0f0f0; /* Linha separadora sutil */
-}
-
-/* Remove a borda do último item para um acabamento limpo */
-tbody tr:last-child td {
-    border-bottom: none;
-}
-
-th {
-    background-color: #f9f9fb; /* Um fundo muito sutil para o cabeçalho */
-    font-size: 0.9rem;
+.section-header h2 {
+    font-size: 1.5rem;
     font-weight: 600;
-    color: var(--gray-text);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-td {
     color: var(--dark-text);
-    font-size: 0.95rem;
 }
 
-/* Estiliza a coluna de valor para usar as cores padrão */
-.transaction-amount {
-    font-weight: 600;
-}
-
-/* As classes .positive e .negative já existem no seu home.css, então serão aplicadas automaticamente! */
-
-/* Mensagem de "nenhuma transação" dentro do card */
-.info-msg {
-    padding: 40px 20px;
-    text-align: center;
-    color: var(--gray-text);
-    font-size: 1rem;
-}
-
-/* Link de voltar centralizado */
 .back-link {
-    display: block;
-    text-align: center;
-    margin-top: 30px;
+    font-size: 0.9rem;
     font-weight: 500;
     color: var(--purple);
-    text-decoration: none;
-    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 20px;
+    transition: background-color 0.2s;
 }
 
 .back-link:hover {
-    color: #6d3aa8;
+    background-color: var(--light-purple);
 }
+
+/* --- Lista de Transações --- */
+/* O estilo para .transaction-list e .transaction-item pode ser o mesmo da home.css. 
+   Se não tiver movido para o styles.css, pode duplicar aqui ou, idealmente, mover para o global. */
+.transaction-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+}
+
+.transaction-item {
+    display: flex;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid #f0f0f0; /* Linha separadora */
+}
+
+.transaction-item:last-child {
+    border-bottom: none; /* Remove a linha do último item */
+}
+
+.transaction-icon {
+    font-size: 1.4rem;
+    margin-right: 20px;
+    color: var(--gray-text);
+    width: 30px;
+    text-align: center;
+}
+
+.transaction-details {
+    flex-grow: 1;
+}
+
+.transaction-details p {
+    line-height: 1.4;
+}
+
+.transaction-description {
+    font-weight: 500;
+    color: var(--dark-text);
+}
+
+.transaction-date {
+    font-size: 0.85rem;
+    color: var(--gray-text);
+}
+
+.transaction-amount {
+    font-weight: 600;
+    font-size: 1rem;
+    text-align: right;
+}
+
+.amount.positive { color: var(--green); }
+.amount.negative { color: var(--red); }
+
+/* --- Estilos da Paginação --- */
+.pagination {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.pagination ul {
+    list-style-type: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.pagination li a {
+    display: block;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--gray-text);
+    transition: all 0.2s ease-in-out;
+}
+
+.pagination li a:hover {
+    background-color: var(--light-purple);
+    color: var(--purple);
+}
+
+/* Estilo para a página ativa */
+.pagination li.active a {
+    background-color: var(--purple);
+    color: var(--white);
+    font-weight: 600;
+}
+
+.pagination ul { list-style-type: none; display: flex; gap: 10px; }
+.pagination li a { text-decoration: none; padding: 5px 10px; border: 1px solid #ccc; }
+.pagination li.active a { background-color: #007bff; color: white; border-color: #007bff; }

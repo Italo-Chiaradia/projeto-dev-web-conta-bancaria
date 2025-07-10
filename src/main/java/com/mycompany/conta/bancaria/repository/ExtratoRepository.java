@@ -13,6 +13,66 @@ import java.sql.ResultSet;
 import java.util.Date;
 
 public class ExtratoRepository {
+    
+    /**
+     * Conta o total de transações para um cliente específico.
+     * @param idCliente ID do cliente.
+     * @return O número total de registros de extrato.
+     * @throws SQLException
+     */
+    public int contarTotalTransacoesPorCliente(int idCliente) throws SQLException {
+        final String sql = "SELECT COUNT(*) FROM V_EXTRATO_COMPLETO WHERE ID_CLIENTE = ?";
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idCliente);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        }
+        return 0;
+    }
+    
+        /**
+     * Busca uma página específica de transações do cliente.
+     * @param idCliente O ID do cliente.
+     * @param offset O número de registros a pular (para a página correta).
+     * @param limit O número de registros por página.
+     * @return Uma lista de ExtratoCompleto para a página atual.
+     * @throws SQLException
+     */
+    public List<ExtratoCompleto> buscarTransacoesPorClientePaginado(int idCliente, int offset, int limit) throws SQLException {
+        List<ExtratoCompleto> transacoes = new ArrayList<>();
+        // Consulta na VIEW V_EXTRATO_COMPLETO com paginação para Java DB
+        final String sql = "SELECT * FROM V_EXTRATO_COMPLETO "
+                         + "WHERE ID_CLIENTE = ? "
+                         + "ORDER BY CREATED_AT DESC "
+                         + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, idCliente);
+            stmt.setInt(2, offset);
+            stmt.setInt(3, limit);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    ExtratoCompleto extrato = new ExtratoCompleto();
+                    extrato.setIdExtrato(rs.getInt("ID_EXTRATO"));
+                    extrato.setCreatedAt(new Date(rs.getTimestamp("CREATED_AT").getTime()));
+                    extrato.setTipo(rs.getString("TIPO"));
+                    extrato.setValor(rs.getBigDecimal("VALOR"));
+                    extrato.setNomeRemetente(rs.getString("NOME_REMETENTE"));
+                    extrato.setNomeDestinatario(rs.getString("NOME_DESTINATARIO"));
+                    transacoes.add(extrato);
+                }
+            }
+        }
+        return transacoes;
+    }
+    
     /**
      * Registra uma nova transação no extrato.
      * @param extrato Objeto Extrato a ser registrado
@@ -41,16 +101,16 @@ public class ExtratoRepository {
      * @return Lista de transações
      * @throws SQLException se ocorrer erro de acesso ao banco
      */
-    public List<Extrato> buscarTransacoesPorCliente(int idCliente) throws SQLException {
-        List<Extrato> transacoes = new ArrayList<>();
+    public List<ExtratoCompleto> buscarTransacoesPorCliente(int idCliente) throws SQLException {
+        List<ExtratoCompleto> transacoes = new ArrayList<>();
         final String sql = "SELECT id, created_at, tipo, valor FROM extrato WHERE id_cliente = ? ORDER BY created_at DESC";
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, idCliente);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    Extrato extrato = new Extrato();
-                    extrato.setId(rs.getInt("id"));
+                    ExtratoCompleto extrato = new ExtratoCompleto();
+                    extrato.setIdExtrato(rs.getInt("id"));
                     extrato.setCreatedAt(new Date(rs.getTimestamp("created_at").getTime()));
                     extrato.setTipo(rs.getString("tipo"));
                     extrato.setValor(rs.getBigDecimal("valor"));

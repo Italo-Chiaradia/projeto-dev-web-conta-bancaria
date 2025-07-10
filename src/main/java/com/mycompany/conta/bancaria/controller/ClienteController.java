@@ -2,6 +2,7 @@ package com.mycompany.conta.bancaria.controller;
 
 import com.mycompany.conta.bancaria.model.Cliente;
 import com.mycompany.conta.bancaria.model.ExtratoCompleto;
+import com.mycompany.conta.bancaria.model.Pagina;
 import com.mycompany.conta.bancaria.service.ClienteService;
 import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
@@ -128,27 +129,31 @@ public class ClienteController extends HttpServlet {
                     break;
                 } 
             case "consultarSaldo":
-                try {
-                    
-                    String cpf = (String) request.getSession().getAttribute("cpf");
-                    if (cpf == null) {
-                        request.setAttribute("erro", "Usuário não autenticado.");
-                        request.getRequestDispatcher("saldo.jsp").forward(request, response);
-                        return;
-                    }
-                    com.mycompany.conta.bancaria.model.Cliente cliente = clienteService.buscarClientePorCpf(cpf);
-                    if (cliente != null) {
-                        request.setAttribute("saldo", cliente.getSaldo());
-                    } else {
-                        request.setAttribute("erro", "Cliente não encontrado.");
-                    }
-                } catch (ServletException | IOException | SQLException e) {
-                    request.setAttribute("erro", "Erro ao consultar saldo. Tente novamente mais tarde.");
-                }   request.getRequestDispatcher("saldo.jsp").forward(request, response);
-                break;
+                {
+                    try {
+
+                        String cpf = (String) request.getSession().getAttribute("cpf");
+                        if (cpf == null) {
+                            request.setAttribute("erro", "Usuário não autenticado.");
+                            request.getRequestDispatcher("saldo.jsp").forward(request, response);
+                            return;
+                        }
+                        com.mycompany.conta.bancaria.model.Cliente cliente = clienteService.buscarClientePorCpf(cpf);
+                        if (cliente != null) {
+                            request.setAttribute("saldo", cliente.getSaldo());
+                        } else {
+                            request.setAttribute("erro", "Cliente não encontrado.");
+                        }
+                    } catch (ServletException | IOException | SQLException e) {
+                        request.setAttribute("erro", "Erro ao consultar saldo. Tente novamente mais tarde.");
+                    }   request.getRequestDispatcher("saldo.jsp").forward(request, response);
+                    break;
+                }
             case "depositoForm":
-                request.getRequestDispatcher("deposito.jsp").forward(request, response);
-                break;
+                {
+                    request.getRequestDispatcher("deposito.jsp").forward(request, response);
+                    break;
+                }
             case "realizarDeposito":
                 {
                     String cpf = (String) request.getSession().getAttribute("cpf");
@@ -168,22 +173,48 @@ public class ClienteController extends HttpServlet {
                 }
             case "verExtrato":
                 {
-                    String cpf = (String) request.getSession().getAttribute("cpf");
-                    if (cpf == null) {
-                        request.setAttribute("erro", "Usuário não autenticado.");
-                        request.getRequestDispatcher("extrato.jsp").forward(request, response);
+                    HttpSession session = request.getSession();
+                    Cliente clienteLogado = (Cliente) session.getAttribute("cliente");
+                    
+                    if (clienteLogado == null) {
+                        request.setAttribute("erro", "Sessão expirada. Faça o login novamente.");
+                        request.getRequestDispatcher("login.jsp").forward(request, response);
                         return;
-                    }       try {
-                        java.util.List<com.mycompany.conta.bancaria.model.Extrato> transacoes = clienteService.buscarExtratoPorCpf(cpf);
-                        request.setAttribute("transacoes", transacoes);
-                    } catch (Exception e) {
+                    }
+                    
+                    final int REGISTROS_POR_PAGINA = 10;
+                    
+                    int paginaAtual = 1;
+                    String paginaParam = request.getParameter("pagina");
+                    if (paginaParam != null && !paginaParam.isEmpty()) {
+                        try {
+                            paginaAtual = Integer.parseInt(paginaParam);
+                        } catch (NumberFormatException e) {
+                            paginaAtual = 1;
+                        }
+                    }
+                    
+                    try {
+                        Pagina<ExtratoCompleto> paginaExtrato = clienteService
+                                .buscarExtratoPaginadoPorCpf(
+                                        clienteLogado.getCpf(), 
+                                        paginaAtual, 
+                                        REGISTROS_POR_PAGINA);
+                        
+                        request.setAttribute("paginaExtrato", paginaExtrato);
+                    } catch(Exception e) {
                         request.setAttribute("erro", e.getMessage());
-                    }       request.getRequestDispatcher("extrato.jsp").forward(request, response);
+                    }
+                    
+                    
+                    request.getRequestDispatcher("extrato.jsp").forward(request, response);
                     break;
                 }
             case "saqueForm":
-                request.getRequestDispatcher("saque.jsp").forward(request, response);
-                break;
+                {   
+                    request.getRequestDispatcher("saque.jsp").forward(request, response);
+                    break;
+                }
             case "realizarSaque":
                 {
                     String cpf = (String) request.getSession().getAttribute("cpf");
@@ -201,7 +232,8 @@ public class ClienteController extends HttpServlet {
                     }       request.getRequestDispatcher("saque.jsp").forward(request, response);
                     break;
                 }
-            case "realizarTransferencia": {
+            case "realizarTransferencia": 
+                {
                     HttpSession session = request.getSession();
                     Cliente clienteLogado = (Cliente) session.getAttribute("cliente");
 
@@ -232,7 +264,7 @@ public class ClienteController extends HttpServlet {
                     List<ExtratoCompleto> ultimasMovimentacoes = clienteService.buscarUltimasMovimentacoesExtratoPorCpf(clienteAtualizado.getCpf(), 3);
                     request.getSession().setAttribute("ultimasMovimentacoes", ultimasMovimentacoes);
                     
-                    request.getRequestDispatcher("transferir.jsp").forward(request, response);
+                    request.getRequestDispatcher("transferencia.jsp").forward(request, response);
                     break;
                 }
             default:

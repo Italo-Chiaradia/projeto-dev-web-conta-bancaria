@@ -8,12 +8,14 @@ package com.mycompany.conta.bancaria.service;
 import com.mycompany.conta.bancaria.model.Cliente;
 import com.mycompany.conta.bancaria.model.Extrato;
 import com.mycompany.conta.bancaria.model.ExtratoCompleto;
+import com.mycompany.conta.bancaria.model.Pagina;
 import com.mycompany.conta.bancaria.model.Transferencias;
 import com.mycompany.conta.bancaria.repository.ClienteRepository;
 import com.mycompany.conta.bancaria.repository.ExtratoRepository;
 import com.mycompany.conta.bancaria.repository.TransferenciaRepository;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -169,10 +171,39 @@ public class ClienteService {
      * @return Lista de transações
      * @throws Exception se cliente não encontrado ou erro de banco
      */
-    public java.util.List<Extrato> buscarExtratoPorCpf(String cpf) throws SQLException, Exception {
+    public List<ExtratoCompleto> buscarExtratoPorCpf(String cpf) throws SQLException, Exception {
         Cliente cliente = repository.findClienteByCpf(cpf);
         if (cliente == null) throw new Exception("Cliente não encontrado");
         return extratoRepository.buscarTransacoesPorCliente(cliente.getId());
+    }
+    
+        /**
+     * Busca o extrato paginado do cliente pelo CPF.
+     * @param cpf CPF do cliente.
+     * @param pagina O número da página desejada (começando em 1).
+     * @param registrosPorPagina A quantidade de itens por página.
+     * @return Um PaginaDTO contendo a lista de transações e informações de paginação.
+     * @throws java.sql.SQLException
+     * @throws Exception se cliente não encontrado ou erro de banco.
+     */
+    public Pagina<ExtratoCompleto> buscarExtratoPaginadoPorCpf(String cpf, int pagina, int registrosPorPagina) throws SQLException, Exception {
+        Cliente cliente = repository.findClienteByCpf(cpf);
+        if (cliente == null) {
+            throw new Exception("Cliente não encontrado");
+        }
+
+        int totalDeRegistros = extratoRepository.contarTotalTransacoesPorCliente(cliente.getId());
+        if (totalDeRegistros == 0) {
+            return new Pagina<>(new ArrayList<>(), 1, 0, 0);
+        }
+
+        int totalPaginas = (int) Math.ceil((double) totalDeRegistros / registrosPorPagina);
+        
+        int offset = (pagina - 1) * registrosPorPagina;
+
+        List<ExtratoCompleto> conteudoDaPagina = extratoRepository.buscarTransacoesPorClientePaginado(cliente.getId(), offset, registrosPorPagina);
+
+        return new Pagina<>(conteudoDaPagina, pagina, totalPaginas, totalDeRegistros);
     }
     
     /**
