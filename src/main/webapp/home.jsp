@@ -88,20 +88,37 @@
                 </div>
             </section>
 
+          <%-- Em src/main/webapp/home.jsp --%>
             <section class="actions-section">
                 <nav class="quick-actions">
+                    
                     <a href="transferencia.jsp" class="action-item">
                         <div class="action-icon"><i class="fa-solid fa-money-bill-transfer"></i></div>
                         <span>Transferir</span>
                     </a>
+
                     <a href="#" class="action-item">
                         <div class="action-icon"><i class="fa-solid fa-piggy-bank"></i></div>
                         <span>Investir</span>
                     </a>
+
                     <a href="cliente?acao=verExtrato" class="action-item">
                         <div class="action-icon"><i class="fa-solid fa-receipt"></i></div>
                         <span>Extrato</span>
-                    </a>    
+                    </a>
+                    
+                    <a href="deposito.jsp" class="action-item">
+                        <div class="action-icon"><i class="fa-solid fa-circle-down"></i></div>
+                        <span>Depositar</span>
+                    </a>
+
+                  
+                    <a href="saque.jsp" class="action-item">
+                        <div class="action-icon"><i class="fa-solid fa-circle-up"></i></div>
+                        <span>Sacar</span>
+                    </a>
+
+
                 </nav>
             </section>
             

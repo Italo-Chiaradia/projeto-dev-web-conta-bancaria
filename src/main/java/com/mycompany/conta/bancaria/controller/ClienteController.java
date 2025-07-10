@@ -154,23 +154,44 @@ public class ClienteController extends HttpServlet {
                     request.getRequestDispatcher("deposito.jsp").forward(request, response);
                     break;
                 }
-            case "realizarDeposito":
-                {
-                    String cpf = (String) request.getSession().getAttribute("cpf");
-                    if (cpf == null) {
+            case "realizarDeposito": {
+                    HttpSession session = request.getSession();
+                    Cliente clienteLogado = (Cliente) session.getAttribute("cliente");
+
+                    if (clienteLogado == null) {
                         request.setAttribute("erro", "Usuário não autenticado.");
                         request.getRequestDispatcher("deposito.jsp").forward(request, response);
                         return;
-                    }       String valor = request.getParameter("valor");
+                    }
+
+                    String cpf = clienteLogado.getCpf();
+                    String valor = request.getParameter("valor");
+
                     try {
-                        java.math.BigDecimal novoSaldo = clienteService.realizarDeposito(cpf, valor);
+                        clienteService.realizarDeposito(cpf, valor);
                         request.setAttribute("sucesso", "Depósito realizado com sucesso!");
-                        request.setAttribute("novoSaldo", novoSaldo);
+
+                        // --- INÍCIO DA ATUALIZAÇÃO DA SESSÃO ---
+                        // 1. Busca o cliente atualizado do banco (com saldo novo)
+                        Cliente clienteAtualizado = clienteService.buscarClientePorCpf(clienteLogado.getCpf());
+
+                        // 2. Atualiza o cliente na sessão
+                        session.setAttribute("cliente", clienteAtualizado);
+
+                        // 3. Atualiza as últimas movimentações na sessão
+                        List<ExtratoCompleto> ultimasMovimentacoes = clienteService.buscarUltimasMovimentacoesExtratoPorCpf(clienteAtualizado.getCpf(), 3);
+                        session.setAttribute("ultimasMovimentacoes", ultimasMovimentacoes);
+                        // --- FIM DA ATUALIZAÇÃO DA SESSÃO ---
+
                     } catch (Exception e) {
                         request.setAttribute("erro", e.getMessage());
-                    }       request.getRequestDispatcher("deposito.jsp").forward(request, response);
+                    }
+
+                    request.getRequestDispatcher("deposito.jsp").forward(request, response);
                     break;
                 }
+
+
             case "verExtrato":
                 {
                     HttpSession session = request.getSession();
@@ -215,23 +236,43 @@ public class ClienteController extends HttpServlet {
                     request.getRequestDispatcher("saque.jsp").forward(request, response);
                     break;
                 }
-            case "realizarSaque":
-                {
-                    String cpf = (String) request.getSession().getAttribute("cpf");
-                    if (cpf == null) {
+            case "realizarSaque": {
+                    HttpSession session = request.getSession();
+                    Cliente clienteLogado = (Cliente) session.getAttribute("cliente");
+
+                    if (clienteLogado == null) {
                         request.setAttribute("erro", "Usuário não autenticado.");
                         request.getRequestDispatcher("saque.jsp").forward(request, response);
                         return;
-                    }       String valor = request.getParameter("valor");
+                    }
+
+                    String cpf = clienteLogado.getCpf();
+                    String valor = request.getParameter("valor");
+
                     try {
-                        java.math.BigDecimal novoSaldo = clienteService.realizarSaque(cpf, valor);
+                        clienteService.realizarSaque(cpf, valor);
                         request.setAttribute("sucesso", "Saque realizado com sucesso!");
-                        request.setAttribute("novoSaldo", novoSaldo);
+
+                        // --- INÍCIO DA ATUALIZAÇÃO DA SESSÃO ---
+                        // 1. Busca o cliente atualizado do banco (com saldo novo)
+                        Cliente clienteAtualizado = clienteService.buscarClientePorCpf(clienteLogado.getCpf());
+
+                        // 2. Atualiza o cliente na sessão
+                        session.setAttribute("cliente", clienteAtualizado);
+
+                        // 3. Atualiza as últimas movimentações na sessão
+                        List<ExtratoCompleto> ultimasMovimentacoes = clienteService.buscarUltimasMovimentacoesExtratoPorCpf(clienteAtualizado.getCpf(), 3);
+                        session.setAttribute("ultimasMovimentacoes", ultimasMovimentacoes);
+                        // --- FIM DA ATUALIZAÇÃO DA SESSÃO ---
+
                     } catch (Exception e) {
                         request.setAttribute("erro", e.getMessage());
-                    }       request.getRequestDispatcher("saque.jsp").forward(request, response);
+                    }
+
+                    request.getRequestDispatcher("saque.jsp").forward(request, response);
                     break;
                 }
+
             case "realizarTransferencia": 
                 {
                     HttpSession session = request.getSession();
