@@ -212,12 +212,31 @@
                                 <div class="transaction-details">
                                     <p class="transaction-description">
                                         <c:choose>
-                                            <c:when test="${not empty mov.nomeDestinatario}">Para: ${mov.nomeDestinatario}</c:when>
-                                            <c:when test="${not empty mov.nomeRemetente}">De: ${mov.nomeRemetente}</c:when>
-                                            <c:otherwise>${mov.tipo}</c:otherwise>
+                                            <%-- CASO 1: É uma transferência (enviada ou recebida) --%>
+                                            <c:when test="${mov.tipo == 'TRANSFERENCIA_ENVIADA' || mov.tipo == 'TRANSFERENCIA_RECEBIDA'}">
+
+                                                <%-- Se o ID do cliente na sessão for igual ao ID do remetente, significa que ELE enviou. --%>
+                                                <%-- Então, mostramos PARA quem ele enviou. --%>
+                                                <c:if test="${sessionScope.cliente.id == mov.idRemetente}">
+                                                    Para: <c:out value="${mov.nomeDestinatario}"/>
+                                                </c:if>
+
+                                                <%-- Se o ID do cliente na sessão for igual ao ID do destinatário, significa que ELE recebeu. --%>
+                                                <%-- Então, mostramos DE quem ele recebeu. --%>
+                                                <c:if test="${sessionScope.cliente.id == mov.idDestinatario}">
+                                                    De: <c:out value="${mov.nomeRemetente}"/>
+                                                </c:if>
+
+                                            </c:when>
+
+                                            <%-- CASO 2: É qualquer outro tipo de movimentação (Depósito, Saque, etc.) --%>
+                                            <c:otherwise>
+                                                <c:out value="${mov.tipo}"/>
+                                            </c:otherwise>
                                         </c:choose>
                                     </p>
                                     <p class="transaction-date">
+                                        <%-- Supondo que o nome do campo de data seja 'data' --%>
                                         <fmt:formatDate value="${mov.createdAt}" pattern="dd MMM, yyyy" />
                                     </p>
                                 </div>

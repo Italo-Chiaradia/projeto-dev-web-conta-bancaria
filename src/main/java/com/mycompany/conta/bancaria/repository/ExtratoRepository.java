@@ -65,7 +65,9 @@ public class ExtratoRepository {
                     extrato.setTipo(rs.getString("TIPO"));
                     extrato.setValor(rs.getBigDecimal("VALOR"));
                     extrato.setNomeRemetente(rs.getString("NOME_REMETENTE"));
+                    extrato.setIdRemetente(rs.getInt("ID_REMETENTE"));
                     extrato.setNomeDestinatario(rs.getString("NOME_DESTINATARIO"));
+                    extrato.setIdDestinatario(rs.getInt("ID_DESTINATARIO"));
                     transacoes.add(extrato);
                 }
             }
