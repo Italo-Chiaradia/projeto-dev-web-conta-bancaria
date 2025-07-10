@@ -18,7 +18,6 @@
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- Header igual ao da home -->
         <header>
             <div class="header-content">
                 <div class="welcome-message">
@@ -36,8 +35,9 @@
                         <c:if test="${not empty sessionScope.cliente}">
                             <h4><c:out value="${sessionScope.cliente.nome}"/></h4>
                             <p>CPF: <c:out value="${sessionScope.cliente.cpf}"/></p>
-                            <p>Agência: 0001</p>
-                            <p>Conta: 12345-6</p>
+
+                            <p>Agência: <c:out value="${sessionScope.cliente.agencia}"/></p>
+                            <p>Conta: <c:out value="${sessionScope.cliente.contaBancaria}"/></p>
 
                             <hr>
 
@@ -50,50 +50,50 @@
             </div>
         </header>
 
-        <!-- Main com extrato -->
+
         <main>
-    <div class="main-container">
-        <section class="transactions-section">
-            <h2>Extrato da Conta</h2>
+            <div class="main-container">
+                <section class="transactions-section">
+                    <h2>Extrato da Conta</h2>
 
-            <c:if test="${not empty erro}">
-                <p style="color:red;">${erro}</p>
-            </c:if>
+                    <c:if test="${not empty erro}">
+                        <p style="color:red;">${erro}</p>
+                    </c:if>
 
-            <div class="card"> <%-- Adiciona o card para envolver a tabela --%>
-                <c:choose>
-                    <c:when test="${not empty transacoes}">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Data</th>
-                                    <th>Tipo</th>
-                                    <th>Valor</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <c:forEach var="t" items="${transacoes}">
-                                    <tr>
-                                        <td><fmt:formatDate value="${t.createdAt}" pattern="dd/MM/yyyy HH:mm"/></td>
-                                        <td>${t.tipo}</td>
-                                        <%-- Lógica para adicionar classe 'positive' ou 'negative' --%>
-                                        <td class="transaction-amount ${t.valor > 0 ? 'positive' : 'negative'}">
-                                            <fmt:formatNumber value="${t.valor}" type="currency" currencySymbol="R$ "/>
-                                        </td>
-                                    </tr>
-                                </c:forEach>
-                            </tbody>
-                        </table>
-                    </c:when>
-                    <c:otherwise>
-                        <p class="info-msg">Nenhuma transação encontrada.</p>
-                    </c:otherwise>
-                </c:choose>
+                    <div class="card"> <%-- Adiciona o card para envolver a tabela --%>
+                        <c:choose>
+                            <c:when test="${not empty transacoes}">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Data</th>
+                                            <th>Tipo</th>
+                                            <th>Valor</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <c:forEach var="t" items="${transacoes}">
+                                            <tr>
+                                                <td><fmt:formatDate value="${t.createdAt}" pattern="dd/MM/yyyy HH:mm"/></td>
+                                                <td>${t.tipo}</td>
+                                                <%-- Lógica para adicionar classe 'positive' ou 'negative' --%>
+                                                <td class="transaction-amount ${t.valor > 0 ? 'positive' : 'negative'}">
+                                                    <fmt:formatNumber value="${t.valor}" type="currency" currencySymbol="R$ "/>
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
+                                    </tbody>
+                                </table>
+                            </c:when>
+                            <c:otherwise>
+                                <p class="info-msg">Nenhuma transação encontrada.</p>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+
+                    <a href="home.jsp" class="back-link">← Voltar para a página principal</a>
+                </section>
             </div>
-
-            <a href="home.jsp" class="back-link">← Voltar para a página principal</a>
-        </section>
-    </div>
 </main>
     </div>
 </body>

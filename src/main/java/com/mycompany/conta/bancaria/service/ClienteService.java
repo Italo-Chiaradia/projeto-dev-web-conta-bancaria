@@ -7,6 +7,7 @@ package com.mycompany.conta.bancaria.service;
 
 import com.mycompany.conta.bancaria.model.Cliente;
 import com.mycompany.conta.bancaria.model.Extrato;
+import com.mycompany.conta.bancaria.model.ExtratoCompleto;
 import com.mycompany.conta.bancaria.model.Transferencias;
 import com.mycompany.conta.bancaria.repository.ClienteRepository;
 import com.mycompany.conta.bancaria.repository.ExtratoRepository;
@@ -14,6 +15,7 @@ import com.mycompany.conta.bancaria.repository.TransferenciaRepository;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -167,10 +169,32 @@ public class ClienteService {
      * @return Lista de transações
      * @throws Exception se cliente não encontrado ou erro de banco
      */
-    public java.util.List<Extrato> buscarExtratoPorCpf(String cpf) throws Exception {
+    public java.util.List<Extrato> buscarExtratoPorCpf(String cpf) throws SQLException, Exception {
         Cliente cliente = repository.findClienteByCpf(cpf);
         if (cliente == null) throw new Exception("Cliente não encontrado");
         return extratoRepository.buscarTransacoesPorCliente(cliente.getId());
+    }
+    
+    /**
+     * Busca uma quantidade definida das últimas movimentações do extrato de um
+     * cliente, identificado pelo CPF.
+     * Este método primeiro localiza o cliente pelo CPF. Se não o encontrar, lança
+     * uma exceção. Caso contrário, busca as últimas transações para o ID do cliente
+     * encontrado.
+     *
+     * @param cpf O CPF do cliente a ser consultado.
+     * @param qtdRegistros A quantidade máxima de últimas movimentações a serem retornadas.
+     * @return Uma lista ({@code List<Extrato>}) contendo as últimas movimentações,
+     * ordenada da mais recente para a mais antiga. Pode retornar uma lista
+     * vazia se não houver transações.
+     * @throws SQLException se ocorrer um erro de acesso ao banco de dados na busca
+     * das transações.
+     * @throws Exception se o cliente com o CPF fornecido não for encontrado.
+     */
+    public List<ExtratoCompleto> buscarUltimasMovimentacoesExtratoPorCpf(String cpf, int qtdRegistros) throws SQLException, Exception {
+        Cliente cliente = repository.findClienteByCpf(cpf);
+        if (cliente == null) throw new Exception("Cliente não encontrado");
+        return extratoRepository.buscarUltimasTransacoesPorCliente(cliente.getId(), qtdRegistros);
     }
 
     /**
@@ -207,6 +231,7 @@ public class ClienteService {
         extratoRepository.registrarTransacao(extrato);
         return novoSaldo;
     }
+    
     public void realizarTransferencia(String cpfRemetente, String contaDestinoStr, String valorTransferenciaStr) throws Exception {
         // 1. Validação do Valor
         if (valorTransferenciaStr == null || valorTransferenciaStr.isBlank()) {

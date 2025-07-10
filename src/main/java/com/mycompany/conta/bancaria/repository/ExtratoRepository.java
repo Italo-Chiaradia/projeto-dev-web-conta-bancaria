@@ -1,6 +1,7 @@
 package com.mycompany.conta.bancaria.repository;
 
 import com.mycompany.conta.bancaria.model.Extrato;
+import com.mycompany.conta.bancaria.model.ExtratoCompleto;
 import com.mycompany.conta.bancaria.util.ConnectionFactory;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -60,4 +61,49 @@ public class ExtratoRepository {
         }
         return transacoes;
     }
-} 
+    
+    /**
+     * Busca as últimas transações do cliente em ordem cronológica decrescente.
+     * @param idCliente ID do cliente
+     * @param qtdRegistros quantos registros no extrato serão resgatados
+     * @return Lista de transações
+     * @throws SQLException se ocorrer erro de acesso ao banco
+     */
+    public List<ExtratoCompleto> buscarUltimasTransacoesPorCliente(int idCliente, int qtdRegistros) throws SQLException {
+        List<ExtratoCompleto> transacoes = new ArrayList<>();
+        final String sql = "SELECT "
+                + "*"
+                + "FROM V_EXTRATO_COMPLETO "
+                + "WHERE id_cliente = ? "
+                + "ORDER BY created_at DESC "
+                + "FETCH FIRST ? ROWS ONLY";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            // Define o valor para o primeiro "?" (id_cliente)
+            stmt.setInt(1, idCliente);
+            // Define o valor para o segundo "?" (LIMIT)
+            stmt.setInt(2, qtdRegistros);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    ExtratoCompleto dto = new ExtratoCompleto();
+                    dto.setIdExtrato(rs.getInt("ID_EXTRATO"));
+                    dto.setIdCliente(rs.getInt("ID_CLIENTE"));
+                    dto.setCreatedAt(new Date(rs.getTimestamp("CREATED_AT").getTime()));
+                    dto.setTipo(rs.getString("TIPO"));
+                    dto.setValor(rs.getBigDecimal("VALOR"));
+                    dto.setIdTransferencia(rs.getInt("ID_TRANSFERENCIA"));
+                    dto.setNomeCliente(rs.getString("NOME_CLIENTE"));
+                    dto.setIdRemetente(rs.getInt("ID_REMETENTE"));
+                    dto.setNomeRemetente(rs.getString("NOME_REMETENTE"));
+                    dto.setIdDestinatario(rs.getInt("ID_DESTINATARIO"));
+                    dto.setNomeDestinatario(rs.getString("NOME_DESTINATARIO"));
+                    transacoes.add(dto);
+                }
+            }
+        }
+        return transacoes;
+    }
+}

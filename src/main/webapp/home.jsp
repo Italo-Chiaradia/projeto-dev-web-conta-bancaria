@@ -5,6 +5,9 @@
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <fmt:setLocale value="pt_BR" />
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -94,42 +97,33 @@
             <section class="transactions-section">
                 <h2>Últimas movimentações</h2>
                 <ul class="transaction-list card">
-                    <li class="transaction-item">
-                        <div class="transaction-icon">
-                            <i class="fa-solid fa-cart-shopping"></i>
-                        </div>
-                        <div class="transaction-details">
-                            <p class="transaction-description">Compra no iFood</p>
-                            <p class="transaction-date">07 JUL, 2025</p>
-                        </div>
-                        <div class="transaction-amount">
-                            <p class="amount negative">- R$ 54,90</p>
-                        </div>
-                    </li>
-                    <li class="transaction-item">
-                        <div class="transaction-icon">
-                            <i class="fa-solid fa-circle-dollar-to-slot"></i>
-                        </div>
-                        <div class="transaction-details">
-                            <p class="transaction-description">Depósito via Pix</p>
-                            <p class="transaction-date">06 JUL, 2025</p>
-                        </div>
-                        <div class="transaction-amount">
-                            <p class="amount positive">+ R$ 800,00</p>
-                        </div>
-                    </li>
-                    <li class="transaction-item">
-                        <div class="transaction-icon">
-                            <i class="fa-solid fa-user-group"></i>
-                        </div>
-                        <div class="transaction-details">
-                            <p class="transaction-description">Transferência para Maria</p>
-                            <p class="transaction-date">05 JUL, 2025</p>
-                        </div>
-                        <div class="transaction-amount">
-                            <p class="amount negative">- R$ 250,00</p>
-                        </div>
-                    </li>
+                    <c:forEach var="movimentacoes" items="${sessionScope.ultimasMovimentacoes}">
+                        <li class="transaction-item">
+                            <div class="transaction-details">
+                                <c:choose>
+                                    <c:when test="${movimentacoes.tipo == 'TRANSFERENCIA_ENVIADA'}">
+                                        <p class="descricao">
+                                            Transferência enviada para <strong>${movimentacoes.nomeDestinatario}</strong>
+                                        </p>
+                                    </c:when>
+
+                                    <c:when test="${movimentacoes.tipo == 'TRANSFERENCIA_RECEBIDA'}">
+                                        <p class="descricao">
+                                            Transferência recebida de <strong>${movimentacoes.nomeRemetente}</strong>
+                                        </p>
+                                    </c:when>
+
+                                    <%-- Outros casos como DEPOSITO, SAQUE, etc. --%>
+                                </c:choose>
+                                <p class="transaction-date"><fmt:formatDate value="${movimentacoes.createdAt}" pattern="dd MMM, yyyy" /></p>
+                            </div>
+                            <div class="transaction-amount">
+                                <p class="amount ${movimentacoes.valor < 0 ? 'negative' : 'positive'}">
+                                    ${movimentacoes.valor >= 0 ? '+ ' : ''}<fmt:formatNumber value="${movimentacoes.valor}" type="currency" currencySymbol="R$ "/>
+                                </p>
+                            </div>
+                        </li>
+                    </c:forEach>
                 </ul>
             </section>
         </main>

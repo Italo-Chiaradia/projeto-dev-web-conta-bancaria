@@ -1,6 +1,7 @@
 package com.mycompany.conta.bancaria.controller;
 
 import com.mycompany.conta.bancaria.model.Cliente;
+import com.mycompany.conta.bancaria.model.ExtratoCompleto;
 import com.mycompany.conta.bancaria.service.ClienteService;
 import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
@@ -11,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,7 +34,7 @@ public class ClienteController extends HttpServlet {
      * @throws java.sql.SQLException
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, SQLException {
+            throws ServletException, IOException, SQLException, Exception {
         response.setContentType("text/html;charset=UTF-8");
         
         String acao = request.getParameter("acao");
@@ -90,7 +92,8 @@ public class ClienteController extends HttpServlet {
                         if (dispatcher!=null)
                             dispatcher.forward(request, response);
                         return;
-                    }       try {
+                    }
+                    try {
                         Cliente clienteAutenticado = clienteService.autenticarCliente(cpf, senha);
                         
                         if (clienteAutenticado == null) {
@@ -101,8 +104,10 @@ public class ClienteController extends HttpServlet {
                         
                         HttpSession session = request.getSession();
                         session.setAttribute("cliente", clienteAutenticado);
+                        List<ExtratoCompleto> ultimasMovimentacoes = clienteService.buscarUltimasMovimentacoesExtratoPorCpf(clienteAutenticado.getCpf(), 3);
+                        session.setAttribute("ultimasMovimentacoes", ultimasMovimentacoes);
                         response.sendRedirect("home.jsp");
-                    } catch (SQLException e) {
+                    } catch (Exception e) {
                         System.err.println("Falha ao tentar entrar no sistema: " + e.getMessage());
                         
                         request.setAttribute("erro", "Erro ao entrar conta!");
@@ -223,6 +228,10 @@ public class ClienteController extends HttpServlet {
                     // Atualiza o cliente na sessão
                     request.getSession().setAttribute("cliente", clienteAtualizado);
 
+                    // Atualiza as movimentações do cliente na sessão
+                    List<ExtratoCompleto> ultimasMovimentacoes = clienteService.buscarUltimasMovimentacoesExtratoPorCpf(clienteAtualizado.getCpf(), 3);
+                    request.getSession().setAttribute("ultimasMovimentacoes", ultimasMovimentacoes);
+                    
                     request.getRequestDispatcher("transferir.jsp").forward(request, response);
                     break;
                 }
@@ -247,6 +256,8 @@ public class ClienteController extends HttpServlet {
             processRequest(request, response);
         } catch (SQLException ex) {
             Logger.getLogger(ClienteController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(ClienteController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -264,6 +275,8 @@ public class ClienteController extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (SQLException ex) {
+            Logger.getLogger(ClienteController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
             Logger.getLogger(ClienteController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
