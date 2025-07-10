@@ -29,9 +29,9 @@
                 <h1>Faça seu login</h1>
 
                 <%-- Tag para exibir mensagens de erro vindas do Servlet --%>
-                <c:if test="${not empty erro}">
+                <c:if test="${not empty param.erro}">
                     <div class="error-message">
-                        ${erro}
+                        ${param.erro}
                     </div>
                 </c:if>
 

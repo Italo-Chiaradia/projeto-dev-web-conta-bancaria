@@ -4,6 +4,16 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+
+<%-- ================================================================== --%>
+<%--          BLOCO DE VERIFICAÇÃO DE SESSÃO DO USUÁRIO                 --%>
+<%-- ================================================================== --%>
+<c:if test="${empty sessionScope.cliente}">
+    <c:redirect url="/login.jsp">
+        <c:param name="erro" value="Realize o login novamente" />
+    </c:redirect>
+</c:if>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
