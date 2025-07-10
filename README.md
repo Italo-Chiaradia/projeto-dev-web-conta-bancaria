@@ -64,13 +64,12 @@ Siga os passos abaixo para configurar e executar o projeto em seu ambiente local
 
 ## 📸 Telas do Sistema
 
-*(Adicione aqui screenshots do seu sistema para ilustrar a documentação)*
+<img width="1913" height="913" alt="image" src="https://github.com/user-attachments/assets/24ad0fd8-bb15-4809-a434-68eee8ecd05e" />
 
-**Tela de Login**
+<img width="1900" height="910" alt="image" src="https://github.com/user-attachments/assets/aaad1d3d-f238-481b-93ab-8ef362b286bd" />
 
-**Tela de Cadastro**
+<img width="1894" height="921" alt="image" src="https://github.com/user-attachments/assets/57d9bd55-799e-41a6-a120-9fe6f0c69b7c" />
 
-**Dashboard Principal**
 
 -----
 
