@@ -309,6 +309,34 @@ public class ClienteController extends HttpServlet {
                     request.getRequestDispatcher("transferencia.jsp").forward(request, response);
                     break;
                 }
+            case "realizarInvestimento": {
+                    HttpSession session = request.getSession();
+                    Cliente clienteLogado = (Cliente) session.getAttribute("cliente");
+
+                    if (clienteLogado == null) {
+                        request.setAttribute("erro", "Sessão expirada. Faça o login novamente.");
+                        request.getRequestDispatcher("login.jsp").forward(request, response);
+                        return;
+                    }
+
+                    String valor = request.getParameter("valor");
+                    try {
+                        clienteService.realizarInvestimento(clienteLogado.getCpf(), valor);
+                        request.setAttribute("sucesso", "Aplicação de " + valor + " realizada com sucesso!");
+
+                        // ATUALIZA OS DADOS DA SESSÃO APÓS A OPERAÇÃO
+                        Cliente clienteAtualizado = clienteService.buscarClientePorCpf(clienteLogado.getCpf());
+                        List<ExtratoCompleto> ultimasMovimentacoes = clienteService.buscarUltimasMovimentacoesExtratoPorCpf(clienteAtualizado.getCpf(), 3);
+                        session.setAttribute("cliente", clienteAtualizado);
+                        session.setAttribute("ultimasMovimentacoes", ultimasMovimentacoes);
+
+                    } catch (Exception e) {
+                        request.setAttribute("erro", e.getMessage());
+                    }
+
+                    request.getRequestDispatcher("investir.jsp").forward(request, response);
+                    break;
+                }
             default:
                 break;
         }

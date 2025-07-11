@@ -88,7 +88,7 @@
                 </div>
             </section>
 
-          <%-- Em src/main/webapp/home.jsp --%>
+          
             <section class="actions-section">
                 <nav class="quick-actions">
                     
@@ -97,7 +97,7 @@
                         <span>Transferir</span>
                     </a>
 
-                    <a href="#" class="action-item">
+                    <a href="investir.jsp" class="action-item">
                         <div class="action-icon"><i class="fa-solid fa-piggy-bank"></i></div>
                         <span>Investir</span>
                     </a>
@@ -125,45 +125,45 @@
             <section class="transactions-section">
                 <h2>Últimas movimentações</h2>
                 <ul class="transaction-list card">
-                    <c:forEach var="movimentacoes" items="${sessionScope.ultimasMovimentacoes}">
-                        <li class="transaction-item">
-                            <div class="transaction-details">
-                                <c:choose>
-                                    <c:when test="${movimentacoes.tipo == 'TRANSFERENCIA_ENVIADA'}">
-                                        <p class="descricao">
-                                            Transferência enviada para <strong>${movimentacoes.nomeDestinatario}</strong>
-                                        </p>
-                                    </c:when>
+                <c:forEach var="movimentacoes" items="${sessionScope.ultimasMovimentacoes}">
+                    <li class="transaction-item">
+                        <div class="transaction-details">
+                            <c:choose>
+                                <c:when test="${movimentacoes.tipo == 'TRANSFERENCIA_ENVIADA'}">
+                                    <p class="descricao">
+                                        Transferência enviada para <strong>${movimentacoes.nomeDestinatario}</strong>
+                                    </p>
+                                </c:when>
 
-                                    <c:when test="${movimentacoes.tipo == 'TRANSFERENCIA_RECEBIDA'}">
-                                        <p class="descricao">
-                                            Transferência recebida de <strong>${movimentacoes.nomeRemetente}</strong>
-                                        </p>
-                                    </c:when>
+                                <c:when test="${movimentacoes.tipo == 'TRANSFERENCIA_RECEBIDA'}">
+                                    <p class="descricao">
+                                        Transferência recebida de <strong>${movimentacoes.nomeRemetente}</strong>
+                                    </p>
+                                </c:when>
 
-                                    <c:when test="${movimentacoes.tipo == 'SAQUE'}">
-                                        <p class="descricao">
-                                            <strong>Saque</strong>
-                                        </p>
-                                    </c:when>
-                                        
-                                    <c:when test="${movimentacoes.tipo == 'DEPOSITO'}">
-                                        <p class="descricao">
-                                            <strong>Depósito</strong>
-                                        </p>
-                                    </c:when>
-                                    <%-- Outros casos como DEPOSITO, SAQUE, etc. --%>
-                                </c:choose>
-                                <p class="transaction-date"><fmt:formatDate value="${movimentacoes.createdAt}" pattern="dd MMM, yyyy" /></p>
-                            </div>
-                            <div class="transaction-amount">
-                                <p class="amount ${movimentacoes.valor < 0 ? 'negative' : 'positive'}">
-                                    ${movimentacoes.valor >= 0 ? '+ ' : ''}<fmt:formatNumber value="${movimentacoes.valor}" type="currency" currencySymbol="R$ "/>
-                                </p>
-                            </div>
-                        </li>
-                    </c:forEach>
-                </ul>
+                                <c:when test="${movimentacoes.tipo == 'SAQUE'}">
+                                    <p class="descricao"><strong>Saque</strong></p>
+                                </c:when>
+
+                                <c:when test="${movimentacoes.tipo == 'DEPOSITO'}">
+                                    <p class="descricao"><strong>Depósito</strong></p>
+                                </c:when>
+
+                                <c:when test="${movimentacoes.tipo == 'APLICACAO_INVESTIMENTO'}">
+                                    <p class="descricao"><strong>Aplicação em Investimento</strong></p>
+                                </c:when>
+
+                            </c:choose>
+                            <p class="transaction-date"><fmt:formatDate value="${movimentacoes.createdAt}" pattern="dd MMM, yyyy" /></p>
+                        </div>
+                        <div class="transaction-amount">
+                            <p class="amount ${movimentacoes.valor < 0 ? 'negative' : 'positive'}">
+                                ${movimentacoes.valor >= 0 ? '+ ' : ''}<fmt:formatNumber value="${movimentacoes.valor}" type="currency" currencySymbol="R$ "/>
+                            </p>
+                        </div>
+                    </li>
+                </c:forEach>
+            </ul>
             </section>
         </main>
     </div>

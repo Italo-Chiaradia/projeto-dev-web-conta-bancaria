@@ -164,4 +164,14 @@ public class ClienteRepository {
             stmt.executeUpdate();
         }
     }
+    public void atualizarSaldosPorCpf(String cpf, java.math.BigDecimal novoSaldo, java.math.BigDecimal novoSaldoInvestido) throws SQLException {
+    final String sql = "UPDATE cliente SET saldo = ?, saldo_investido = ? WHERE cpf = ?";
+    try (Connection conn = ConnectionFactory.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setBigDecimal(1, novoSaldo);
+        stmt.setBigDecimal(2, novoSaldoInvestido);
+        stmt.setString(3, cpf);
+        stmt.executeUpdate();
+    }
+}
 }
