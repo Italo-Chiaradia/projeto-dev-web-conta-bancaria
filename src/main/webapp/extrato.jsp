@@ -19,9 +19,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bankly - Extrato</title>
+    <title>Extrato</title>
 
-    <link rel="icon" type="image/x-icon" href="./assets/icon-bankly.png" />
+    <link rel="icon" type="image/x-icon" href="./assets/icon.png" />
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
@@ -243,6 +243,12 @@
                                             </c:when>
                                             <c:when test="${mov.tipo == 'RESGATE_INVESTIMENTO'}">
                                                 Resgate de Investimento
+                                            </c:when>
+                                            <c:when test="${mov.tipo == 'SAQUE'}">
+                                                Saque
+                                            </c:when>
+                                            <c:when test="${mov.tipo == 'DEPOSITO'}">
+                                                Depósito
                                             </c:when>
                                             <%-- CASO 2: É qualquer outro tipo de movimentação (Depósito, Saque, etc.) --%>
                                             <c:otherwise>
