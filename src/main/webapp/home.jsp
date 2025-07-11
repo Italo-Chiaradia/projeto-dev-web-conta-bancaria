@@ -97,7 +97,7 @@
                         <span>Transferir</span>
                     </a>
 
-                    <a href="investir.jsp" class="action-item">
+                    <a href="investimento.jsp" class="action-item">
                         <div class="action-icon"><i class="fa-solid fa-piggy-bank"></i></div>
                         <span>Investir</span>
                     </a>
@@ -153,6 +153,9 @@
                                     <p class="descricao"><strong>Aplicação em Investimento</strong></p>
                                 </c:when>
 
+                                <c:when test="${movimentacoes.tipo == 'RESGATE_INVESTIMENTO'}">
+                                    <p class="descricao"><strong>Resgate de Investimento</strong></p>
+                                </c:when>
                             </c:choose>
                             <p class="transaction-date"><fmt:formatDate value="${movimentacoes.createdAt}" pattern="dd MMM, yyyy" /></p>
                         </div>

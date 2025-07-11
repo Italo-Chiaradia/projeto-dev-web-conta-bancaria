@@ -383,5 +383,48 @@ public class ClienteService {
 
         extratoRepository.registrarTransacao(extrato);
     }
+    public void realizarResgate(String cpf, String valorInvestimentoStr) throws Exception {
+        if (valorInvestimentoStr == null || valorInvestimentoStr.isBlank()) {
+            throw new Exception("Valor não informado");
+        }
+
+        BigDecimal valor;
+        try {
+            valor = new BigDecimal(valorInvestimentoStr.replace(",", "."));
+        } catch (NumberFormatException e) {
+            throw new Exception("Valor inválido");
+        }
+
+        if (valor.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new Exception("O valor do resgate deve ser maior que zero");
+        }
+
+        Cliente cliente = repository.findClienteByCpf(cpf);
+        if (cliente == null) {
+            throw new Exception("Cliente não encontrado");
+        }
+
+        // Validação de Saldo (Fluxo Alternativo 4a)
+        if (cliente.getSaldoInvestido().compareTo(valor) < 0) {
+            throw new Exception("Saldo Investido insuficiente para realizar resgate");
+        }
+
+        // Calcula os novos saldos
+        BigDecimal novoSaldo = cliente.getSaldo().add(valor);
+        BigDecimal novoSaldoInvestido = cliente.getSaldoInvestido().subtract(valor);
+        
+
+        // Atualiza os dois saldos no banco de dados
+        repository.atualizarSaldosPorCpf(cpf, novoSaldo, novoSaldoInvestido);
+
+        // Registra a transação no extrato
+        Extrato extrato = new Extrato();
+        extrato.setIdCliente(cliente.getId());
+        extrato.setCreatedAt(new java.util.Date());
+        extrato.setTipo("RESGATE_INVESTIMENTO");
+        extrato.setValor(valor);
+
+        extratoRepository.registrarTransacao(extrato);
+    }
 }
     

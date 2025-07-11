@@ -47,23 +47,21 @@ public class ClienteController extends HttpServlet {
                     String cpf = request.getParameter("cpf");
                     String senha = request.getParameter("senha");
                     String senhaConfirma = request.getParameter("senha-confirma");
-                    // cpf sem pontos e traços, só com os numeros
                     String cpfLimpo = cpf.replaceAll("[^\\d]", "");
-                    // Verificar se o cpf é válido
                     if (!clienteService.isCpfValido(cpf)) {
                         request.setAttribute("erro", "Formato do CPF é inválido!");
                         RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp");
                         if (dispatcher!=null)
                             dispatcher.forward(request, response);
                         return;
-                    }       // Verificar senhas
+                    }
                     if (!senha.equals(senhaConfirma)) {
                         request.setAttribute("erro", "Senhas não coincidem!");
                         RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp");
                         if (dispatcher!=null)
                             dispatcher.forward(request, response);
                         return;
-                    }       // Verifica se já existe cpf cadastrado
+                    }
                     if (clienteService.checkIfCpfAlreadyExists(cpfLimpo)) {
                         request.setAttribute("erro", "CPF já cadastrado no sistema!");
                         RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp");
@@ -89,18 +87,14 @@ public class ClienteController extends HttpServlet {
                     try {
                         Cliente clienteAutenticado = clienteService.autenticarCliente(cpf, senha);
 
-                        // Se a autenticação falhar, clienteAutenticado será nulo
                         if (clienteAutenticado == null) {
-                            // 1. Define o atributo "erro" na requisição
                             request.setAttribute("erro", "CPF ou senha inválidos!");
 
-                            // 2. Encaminha (forward) de volta para a página de login, levando a requisição junto
                             RequestDispatcher dispatcher = request.getRequestDispatcher("/login.jsp");
                             dispatcher.forward(request, response);
-                            return; // Encerra a execução aqui
+                            return;
                         }
 
-                        // Se a autenticação for bem-sucedida...
                         HttpSession session = request.getSession();
                         session.setAttribute("cliente", clienteAutenticado);
 
@@ -110,7 +104,6 @@ public class ClienteController extends HttpServlet {
                         response.sendRedirect("home.jsp");
 
                     } catch (Exception e) {
-                        // Em caso de erro de banco de dados, etc.
                         System.err.println("Falha no processo de login: " + e.getMessage());
                         request.setAttribute("erro", "Ocorreu um erro no sistema. Tente novamente.");
                         RequestDispatcher dispatcher = request.getRequestDispatcher("/login.jsp");
@@ -150,11 +143,6 @@ public class ClienteController extends HttpServlet {
                     }   request.getRequestDispatcher("saldo.jsp").forward(request, response);
                     break;
                 }
-            case "depositoForm":
-                {
-                    request.getRequestDispatcher("deposito.jsp").forward(request, response);
-                    break;
-                }
             case "realizarDeposito": {
                     HttpSession session = request.getSession();
                     Cliente clienteLogado = (Cliente) session.getAttribute("cliente");
@@ -172,17 +160,12 @@ public class ClienteController extends HttpServlet {
                         clienteService.realizarDeposito(cpf, valor);
                         request.setAttribute("sucesso", "Depósito realizado com sucesso!");
 
-                        // --- INÍCIO DA ATUALIZAÇÃO DA SESSÃO ---
-                        // 1. Busca o cliente atualizado do banco (com saldo novo)
                         Cliente clienteAtualizado = clienteService.buscarClientePorCpf(clienteLogado.getCpf());
 
-                        // 2. Atualiza o cliente na sessão
                         session.setAttribute("cliente", clienteAtualizado);
 
-                        // 3. Atualiza as últimas movimentações na sessão
                         List<ExtratoCompleto> ultimasMovimentacoes = clienteService.buscarUltimasMovimentacoesExtratoPorCpf(clienteAtualizado.getCpf(), 3);
                         session.setAttribute("ultimasMovimentacoes", ultimasMovimentacoes);
-                        // --- FIM DA ATUALIZAÇÃO DA SESSÃO ---
 
                     } catch (Exception e) {
                         request.setAttribute("erro", e.getMessage());
@@ -191,8 +174,6 @@ public class ClienteController extends HttpServlet {
                     request.getRequestDispatcher("deposito.jsp").forward(request, response);
                     break;
                 }
-
-
             case "verExtrato":
                 {
                     HttpSession session = request.getSession();
@@ -232,11 +213,6 @@ public class ClienteController extends HttpServlet {
                     request.getRequestDispatcher("extrato.jsp").forward(request, response);
                     break;
                 }
-            case "saqueForm":
-                {   
-                    request.getRequestDispatcher("saque.jsp").forward(request, response);
-                    break;
-                }
             case "realizarSaque": {
                     HttpSession session = request.getSession();
                     Cliente clienteLogado = (Cliente) session.getAttribute("cliente");
@@ -254,17 +230,12 @@ public class ClienteController extends HttpServlet {
                         clienteService.realizarSaque(cpf, valor);
                         request.setAttribute("sucesso", "Saque realizado com sucesso!");
 
-                        // --- INÍCIO DA ATUALIZAÇÃO DA SESSÃO ---
-                        // 1. Busca o cliente atualizado do banco (com saldo novo)
                         Cliente clienteAtualizado = clienteService.buscarClientePorCpf(clienteLogado.getCpf());
 
-                        // 2. Atualiza o cliente na sessão
                         session.setAttribute("cliente", clienteAtualizado);
 
-                        // 3. Atualiza as últimas movimentações na sessão
                         List<ExtratoCompleto> ultimasMovimentacoes = clienteService.buscarUltimasMovimentacoesExtratoPorCpf(clienteAtualizado.getCpf(), 3);
                         session.setAttribute("ultimasMovimentacoes", ultimasMovimentacoes);
-                        // --- FIM DA ATUALIZAÇÃO DA SESSÃO ---
 
                     } catch (Exception e) {
                         request.setAttribute("erro", e.getMessage());
@@ -296,13 +267,10 @@ public class ClienteController extends HttpServlet {
                         request.setAttribute("erro", e.getMessage());
                     }
 
-                    // Busca o cliente atualizado do banco (com saldo novo)
                     Cliente clienteAtualizado = clienteService.buscarClientePorCpf(clienteLogado.getCpf());
 
-                    // Atualiza o cliente na sessão
                     request.getSession().setAttribute("cliente", clienteAtualizado);
 
-                    // Atualiza as movimentações do cliente na sessão
                     List<ExtratoCompleto> ultimasMovimentacoes = clienteService.buscarUltimasMovimentacoesExtratoPorCpf(clienteAtualizado.getCpf(), 3);
                     request.getSession().setAttribute("ultimasMovimentacoes", ultimasMovimentacoes);
                     
@@ -322,9 +290,8 @@ public class ClienteController extends HttpServlet {
                     String valor = request.getParameter("valor");
                     try {
                         clienteService.realizarInvestimento(clienteLogado.getCpf(), valor);
-                        request.setAttribute("sucesso", "Aplicação de " + valor + " realizada com sucesso!");
+                        request.setAttribute("sucesso", "Aplicação realizada com sucesso!");
 
-                        // ATUALIZA OS DADOS DA SESSÃO APÓS A OPERAÇÃO
                         Cliente clienteAtualizado = clienteService.buscarClientePorCpf(clienteLogado.getCpf());
                         List<ExtratoCompleto> ultimasMovimentacoes = clienteService.buscarUltimasMovimentacoesExtratoPorCpf(clienteAtualizado.getCpf(), 3);
                         session.setAttribute("cliente", clienteAtualizado);
@@ -334,7 +301,35 @@ public class ClienteController extends HttpServlet {
                         request.setAttribute("erro", e.getMessage());
                     }
 
-                    request.getRequestDispatcher("investir.jsp").forward(request, response);
+                    request.getRequestDispatcher("investimento.jsp").forward(request, response);
+                    break;
+                }
+            case "realizarResgate": 
+                {
+                    HttpSession session = request.getSession();
+                    Cliente clienteLogado = (Cliente) session.getAttribute("cliente");
+
+                    if (clienteLogado == null) {
+                        request.setAttribute("erro", "Sessão expirada. Faça o login novamente.");
+                        request.getRequestDispatcher("login.jsp").forward(request, response);
+                        return;
+                    }
+
+                    String valor = request.getParameter("valor");
+                    try {
+                        clienteService.realizarResgate(clienteLogado.getCpf(), valor);
+                        request.setAttribute("sucesso", "Resgate realizado com sucesso!");
+
+                        Cliente clienteAtualizado = clienteService.buscarClientePorCpf(clienteLogado.getCpf());
+                        List<ExtratoCompleto> ultimasMovimentacoes = clienteService.buscarUltimasMovimentacoesExtratoPorCpf(clienteAtualizado.getCpf(), 3);
+                        session.setAttribute("cliente", clienteAtualizado);
+                        session.setAttribute("ultimasMovimentacoes", ultimasMovimentacoes);
+
+                    } catch (Exception e) {
+                        request.setAttribute("erro", e.getMessage());
+                    }
+
+                    request.getRequestDispatcher("investimento.jsp").forward(request, response);
                     break;
                 }
             default:

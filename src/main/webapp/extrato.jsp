@@ -238,7 +238,12 @@
                                                 </c:if>
 
                                             </c:when>
-
+                                            <c:when test="${mov.tipo == 'APLICACAO_INVESTIMENTO'}">
+                                                Aplicação em Investimento
+                                            </c:when>
+                                            <c:when test="${mov.tipo == 'RESGATE_INVESTIMENTO'}">
+                                                Resgate de Investimento
+                                            </c:when>
                                             <%-- CASO 2: É qualquer outro tipo de movimentação (Depósito, Saque, etc.) --%>
                                             <c:otherwise>
                                                 <c:out value="${mov.tipo}"/>
