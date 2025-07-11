@@ -68,7 +68,8 @@ Siga os passos abaixo para configurar e executar o projeto em seu ambiente local
 
 <img width="1900" height="910" alt="image" src="https://github.com/user-attachments/assets/aaad1d3d-f238-481b-93ab-8ef362b286bd" />
 
-<img width="1894" height="921" alt="image" src="https://github.com/user-attachments/assets/57d9bd55-799e-41a6-a120-9fe6f0c69b7c" />
+<img width="1888" height="919" alt="image" src="https://github.com/user-attachments/assets/3b4434ff-a7ca-4c27-a8e0-ed7a627b3076" />
+
 
 
 -----
