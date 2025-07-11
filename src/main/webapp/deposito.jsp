@@ -11,12 +11,12 @@
     
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="assets/css/home.css">
-    <link rel="stylesheet" href="assets/css/transferir.css"> <%-- Reutilizando o CSS da transferência --%>
+    <link rel="stylesheet" href="assets/css/transferir.css">
 </head>
 <body>
     <div class="dashboard-container">
         
-        <c:import url="header.jsp"/> <%-- Se você tiver o header modularizado --%>
+        <c:import url="header.jsp"/>
 
         <main>
             <div class="form-container">

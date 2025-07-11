@@ -11,7 +11,7 @@
     
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="assets/css/home.css">
-    <link rel="stylesheet" href="assets/css/transferir.css"> <%-- Reutilizando o CSS dos formulários --%>
+    <link rel="stylesheet" href="assets/css/transferir.css">
 </head>
 <body>
     <div class="dashboard-container">
